@@ -16,12 +16,12 @@ export function AccordionItem({
   onToggle,
 }: AccordionItemProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+    <div className="overflow-hidden rounded-xl border border-border bg-white">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-secondary/70"
       >
         <h3 className="text-base font-semibold text-foreground sm:text-lg">
           {question}

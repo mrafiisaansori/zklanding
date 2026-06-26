@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,22 +6,53 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
+    --background: 210 44% 99%; /* #FAFCFE  halaman */
+    --surface-muted: 210 40% 96.5%; /* #F1F5F9  section selang-seling */
+    --foreground: 222 47% 11%; /* #0B1220  teks utama */
+    --card: 0 0% 100%; /* #FFFFFF  kartu */
     --card-foreground: 222 47% 11%;
-    --primary: 221 83% 53%; /* Biru Laut #2563EB */
+    --primary: 204 79% 46%; /* #1987D1  warna logo/brand */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 214 95% 93%;
-    --accent-foreground: 221 83% 40%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
-    --radius: 0.9rem;
+    --muted: 210 40% 96%; /* #F1F5F9 */
+    --muted-foreground: 215 19% 41%; /* #5B6577  teks sekunder */
+    --accent: 204 88% 94%; /* #DCEEFB  bg aksen lembut */
+    --accent-foreground: 204 82% 30%;
+    --emerald: 160 84% 39%; /* #10B981  aksen sekunder */
+    --emerald-soft: 152 76% 95%; /* #E7FBF3  bg emerald lembut */
+    --border: 214 28% 90%; /* #DEE5EF */
+    --input: 214 28% 90%;
+    --ring: 204 79% 46%;
+    /* Elevated panel token for compact product surfaces. */
+    --panel: 222 47% 11%; /* #0B1220 */
+    --panel-foreground: 0 0% 100%;
+    --panel-muted: 215 25% 70%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 222 47% 8%; /* #0A0F1C  navy gelap */
+    --surface-muted: 222 44% 10%; /* #0D1322 */
+    --foreground: 213 33% 92%; /* #E3EAF3  soft white */
+    --card: 222 44% 12%; /* #121A2C */
+    --card-foreground: 213 33% 92%;
+    --primary: 204 79% 46%; /* brand tetap utk fill aksen */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 38% 18%;
+    --secondary-foreground: 213 33% 92%;
+    --muted: 222 38% 16%; /* #1A2236 */
+    --muted-foreground: 214 24% 66%; /* #95A4BC  teks sekunder */
+    --accent: 206 70% 16%; /* #0E2B45  bg aksen lembut gelap */
+    --accent-foreground: 202 80% 75%;
+    --emerald: 158 64% 52%; /* #34D399  emerald cerah utk dark */
+    --emerald-soft: 200 50% 14%; /* bg emerald lembut gelap */
+    --border: 222 30% 22%; /* #29344C */
+    --input: 222 30% 22%;
+    --ring: 202 84% 60%;
+    --panel: 222 42% 14%; /* elevated, sedikit lebih terang dari card */
+    --panel-foreground: 213 33% 95%;
+    --panel-muted: 214 22% 62%;
   }
 
   * {
@@ -32,14 +63,70 @@
     scroll-behavior: smooth;
   }
 
+  section[id] {
+    scroll-margin-top: 6rem;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html.theme-ready *,
+  html.theme-ready *::before,
+  html.theme-ready *::after {
+    transition-property: background-color, border-color, color, fill, stroke,
+      box-shadow;
+    transition-duration: 320ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .bg-hero-grid {
+    background-image: linear-gradient(
+        to right,
+        hsl(var(--primary) / 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, hsl(var(--primary) / 0.05) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
+  .bg-page-base {
+    background:
+      radial-gradient(circle at 14% 0%, hsl(var(--primary) / 0.055), transparent 30%),
+      radial-gradient(circle at 92% 18%, hsl(var(--emerald) / 0.045), transparent 34%),
+      hsl(var(--background));
+  }
+
+  .bg-page-surface {
+    background:
+      linear-gradient(180deg, hsl(var(--surface-muted) / 0.92), hsl(var(--background))),
+      radial-gradient(circle at 88% 0%, hsl(var(--primary) / 0.07), transparent 34%);
+  }
+
+  .bg-page-accent {
+    background:
+      radial-gradient(circle at 16% 8%, hsl(var(--primary) / 0.12), transparent 32%),
+      radial-gradient(circle at 88% 20%, hsl(var(--emerald) / 0.08), transparent 36%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--surface-muted) / 0.82));
   }
 }

@@ -7,3 +7,6 @@ dist-ssr
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.agents
+REDESIGN-SPEC.md
+migration_role_gudang_plan_free.sql

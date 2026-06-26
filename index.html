@@ -3,9 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#2563EB" />
+
+    <!-- Anti-FOUC: set tema SEBELUM paint agar tidak ada kedip light->dark -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          var isDark = stored ? stored === "dark" : prefersDark;
+          document.documentElement.classList.toggle("dark", isDark);
+        } catch (e) {}
+        // aktifkan transisi warna setelah frame pertama
+        window.addEventListener("DOMContentLoaded", function () {
+          requestAnimationFrame(function () {
+            document.documentElement.classList.add("theme-ready");
+          });
+        });
+      })();
+    </script>
+
+    <meta
+      name="theme-color"
+      content="#1987D1"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0A0F1C"
+      media="(prefers-color-scheme: dark)"
+    />
     <link rel="icon" type="image/png" href="/zona-kasir-icon.png" />
     <link rel="apple-touch-icon" href="/zona-kasir-icon.png" />
+
+    <!-- Preconnect Google Fonts (Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <!-- Primary Meta Tags -->
     <title>Zona Kasir | Aplikasi Kasir Online &amp; POS untuk Bisnis</title>
@@ -15,7 +49,7 @@
     />
     <meta
       name="description"
-      content="Transaksi lebih cepat, bisnis lebih terkontrol dengan Zona Kasir. Aplikasi kasir online dan POS untuk transaksi, stok barang, QRIS, serta laporan. Mulai gratis."
+      content="Zona Kasir - aplikasi kasir online dan POS untuk toko, UMKM, retail, cafe, dan F&B. Kelola transaksi, stok otomatis, QRIS merchant, katalog produk, Open Bill, dan laporan usaha. Mulai gratis."
     />
     <meta
       name="keywords"
@@ -23,11 +57,11 @@
     />
     <meta name="author" content="Zona Kasir" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://zonakasir.id/" />
+    <link rel="canonical" href="https://zonakasir.web.id/" />
 
     <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://zonakasir.id/" />
+    <meta property="og:url" content="https://zonakasir.web.id/" />
     <meta property="og:site_name" content="Zona Kasir" />
     <meta property="og:locale" content="id_ID" />
     <meta
@@ -36,9 +70,9 @@
     />
     <meta
       property="og:description"
-      content="Aplikasi kasir online dan POS modern untuk transaksi, stok barang, QRIS, katalog, serta laporan bisnis dalam satu platform. Mulai gratis."
+      content="Aplikasi kasir online dan POS untuk toko, UMKM, retail, cafe, dan F&B. Transaksi, stok otomatis, QRIS merchant, katalog produk, Open Bill, dan laporan usaha dalam satu sistem. Mulai gratis."
     />
-    <meta property="og:image" content="https://zonakasir.id/og-image.png" />
+    <meta property="og:image" content="https://zonakasir.web.id/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Zona Kasir - Aplikasi Kasir & POS untuk UMKM" />
@@ -50,7 +84,7 @@
       name="twitter:description"
       content="Aplikasi kasir online dan POS modern untuk transaksi, stok barang, QRIS, dan laporan bisnis. Mulai gratis."
     />
-    <meta name="twitter:image" content="https://zonakasir.id/og-image.png" />
+    <meta name="twitter:image" content="https://zonakasir.web.id/og-image.png" />
 
     <!-- Structured Data: SoftwareApplication -->
     <script type="application/ld+json">
@@ -60,15 +94,15 @@
         "name": "Zona Kasir",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web, Android, iOS, Windows",
-        "description": "Aplikasi kasir online dan POS modern untuk toko, UMKM, retail, coffee shop, dan F&B. Kelola transaksi, stok barang, QRIS merchant, katalog online, struk, dan laporan usaha.",
-        "url": "https://zonakasir.id/",
+        "description": "Aplikasi kasir online dan POS untuk toko, UMKM, retail, coffee shop, dan F&B. Kelola transaksi, stok otomatis, QRIS merchant, katalog produk, Open Bill, struk, dan laporan usaha.",
+        "url": "https://zonakasir.web.id/",
         "offers": [
           {
             "@type": "Offer",
             "name": "FREE",
             "price": "0",
             "priceCurrency": "IDR",
-            "description": "Maksimal 50 produk, 1 akun kasir, kasir POS, QRIS merchant, dan katalog online."
+            "description": "Maksimal 20 produk, 1 akun kasir, kasir POS, QRIS merchant, dan katalog online."
           },
           {
             "@type": "Offer",
@@ -88,7 +122,7 @@
             "name": "BUSINESS",
             "price": "1000000",
             "priceCurrency": "IDR",
-            "description": "Semua fitur PRO plus custom aplikasi/branding, setup khusus, dan payment gateway QRIS dinamis Midtrans dengan status pembayaran otomatis via webhook. Mulai dari Rp1 jutaan/tahun, menyesuaikan kebutuhan merchant.",
+            "description": "Semua fitur PRO plus custom aplikasi/branding, setup khusus, alur pembayaran terintegrasi, dan pendampingan implementasi. Harga mulai dari Rp1 jutaan/tahun, menyesuaikan kebutuhan merchant.",
             "priceSpecification": {
               "@type": "UnitPriceSpecification",
               "price": "1000000",
@@ -98,21 +132,18 @@
           }
         ],
         "featureList": [
-          "Transaksi kasir cepat",
+          "Kasir POS harian",
           "Pembayaran Cash, QRIS, dan Transfer",
           "Cetak struk thermal 58mm/80mm",
+          "QRIS merchant statis milik usaha sendiri",
           "Manajemen produk dan barcode",
           "Import produk Excel/CSV",
-          "Stok otomatis tercatat",
-          "Katalog online shareable",
-          "Laporan omzet dan laba",
+          "Stok otomatis berkurang saat transaksi",
+          "Katalog online untuk menampilkan produk",
+          "Open Bill untuk cafe dan resto",
+          "Laporan omzet, laba, dan rekap kasir",
           "Multiuser admin dan kasir"
-        ],
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "ratingCount": "215"
-        }
+        ]
       }
     </script>
 
@@ -122,8 +153,8 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Zona Kasir",
-        "url": "https://zonakasir.id/",
-        "logo": "https://zonakasir.id/zona-kasir-icon.png",
+        "url": "https://zonakasir.web.id/",
+        "logo": "https://zonakasir.web.id/zona-kasir-icon.png",
         "description": "Penyedia aplikasi kasir gratis, aplikasi kasir online, dan POS modern untuk mengelola transaksi, stok barang, QRIS, serta laporan bisnis.",
         "sameAs": []
       }
@@ -148,7 +179,7 @@
             "name": "Apakah Zona Kasir bisa digunakan gratis?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Ya. Paket FREE seharga Rp0 sudah mencakup kasir POS, QRIS merchant, katalog online, hingga 50 produk dan 1 akun kasir. Cocok untuk memulai usaha kecil."
+              "text": "Ya. Paket FREE seharga Rp0 sudah mencakup kasir POS, QRIS merchant, katalog online, hingga 20 produk dan 1 akun kasir. Cocok untuk memulai usaha kecil."
             }
           },
           {
@@ -156,7 +187,7 @@
             "name": "Apa beda paket FREE, PRO, dan BUSINESS?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Paket FREE dibatasi 50 produk dan 1 akun kasir dengan struk berbranding Zona Kasir. Paket PRO Rp50.000/bulan memberi produk lebih banyak, multiple kasir, Open Bill, voucher/promo, pajak & service charge, rekapitulasi laporan lengkap, dan struk tanpa branding. Paket BUSINESS mulai Rp1 jutaan/tahun mencakup semua fitur PRO ditambah custom aplikasi/branding, setup khusus, dan payment gateway QRIS dinamis Midtrans dengan status pembayaran otomatis."
+              "text": "Paket FREE dibatasi maksimal 20 produk dan 1 akun kasir dengan struk berbranding Zona Kasir. Paket PRO Rp50.000/bulan memberi produk tanpa batas, multiple kasir, Open Bill, voucher/promo, pajak & service charge, rekapitulasi laporan lengkap, dan struk tanpa branding. Paket BUSINESS mulai Rp1 jutaan/tahun mencakup semua fitur PRO ditambah custom aplikasi/branding, setup khusus, alur pembayaran terintegrasi, dan pendampingan implementasi."
             }
           },
           {
@@ -164,7 +195,7 @@
             "name": "Apa itu paket BUSINESS dan apa keunggulannya?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Paket BUSINESS ditujukan untuk bisnis yang ingin sistem lebih profesional dengan custom aplikasi, custom branding, dan setup khusus. BUSINESS mendukung payment gateway QRIS dinamis menggunakan Midtrans, di mana QR pembayaran dibuat otomatis sesuai nominal transaksi dan status pembayaran diperbarui otomatis melalui webhook. Harga mulai dari Rp1 jutaan/tahun dan menyesuaikan kebutuhan merchant. Payment gateway QRIS dinamis hanya tersedia di paket BUSINESS."
+              "text": "Paket BUSINESS ditujukan untuk bisnis yang ingin sistem lebih profesional dengan custom aplikasi, custom branding, setup khusus, alur pembayaran terintegrasi, dan pendampingan implementasi. Harga mulai dari Rp1 jutaan/tahun dan menyesuaikan kebutuhan merchant."
             }
           },
           {
@@ -188,7 +219,7 @@
             "name": "Apakah bisa menggunakan QRIS sendiri?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Bisa. Zona Kasir menggunakan QRIS statis milik merchant Anda sendiri dengan konfirmasi pembayaran manual, sehingga dana langsung masuk ke rekening usaha Anda."
+              "text": "Bisa. Zona Kasir dapat menampilkan QRIS merchant milik usaha Anda di alur kasir, sehingga pembayaran lebih rapi dan mudah dicek oleh kasir."
             }
           },
           {
@@ -204,7 +235,7 @@
             "name": "Apakah bisa import produk dari Excel?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Bisa. Anda dapat mengimpor produk dari file Excel/CSV. Paket FREE mengikuti batas plan, sedangkan paket PRO tanpa batas plan."
+              "text": "Bisa. Anda dapat mengimpor produk dari file Excel/CSV. Paket FREE mengikuti batas maksimal 20 produk; jika import membuat total melewati 20 produk, sistem memberi tahu bahwa limit FREE tercapai. Paket PRO tanpa batas plan."
             }
           },
           {
@@ -212,7 +243,7 @@
             "name": "Apakah tersedia katalog online?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Ya. Setiap merchant mendapat link katalog publik seperti /store/{slug} yang bisa dibagikan ke pelanggan, dengan order via WhatsApp tanpa perlu website tambahan."
+              "text": "Ya. Setiap merchant mendapat link katalog publik seperti /store/{slug} untuk menampilkan produk, harga, kategori, dan info toko. Katalog bersifat informasi (etalase untuk dilihat pelanggan), bukan untuk transaksi online."
             }
           },
           {

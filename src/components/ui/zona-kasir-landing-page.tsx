@@ -1,73 +1,84 @@
-import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  Store,
-  QrCode,
-  Boxes,
-  LinkIcon,
-  BarChart3,
-  ReceiptText,
-  ShoppingCart,
-  CreditCard,
-  Printer,
-  Barcode,
-  FileSpreadsheet,
-  Ticket,
-  Percent,
-  Share2,
-  Users,
-  Check,
-  X,
-  Menu,
-  Smartphone,
-  Monitor,
-  Coffee,
-  Shirt,
-  ShoppingBag,
-  Building2,
-  TrendingUp,
-  Wallet,
-  PackageMinus,
   ArrowRight,
-  Sparkles,
+  Barcode,
+  BarChart3,
+  Boxes,
+  Building2,
+  Check,
+  ChevronDown,
+  Coffee,
+  CreditCard,
+  FileSpreadsheet,
+  Instagram,
+  Layers,
+  Mail,
+  Menu,
   MessageCircle,
+  MonitorSmartphone,
+  Moon,
+  PackageCheck,
+  PackageMinus,
+  Percent,
+  Phone,
+  Printer,
+  QrCode,
+  ReceiptText,
+  Search,
+  ShoppingBag,
+  ShoppingCart,
+  Sparkles,
+  Star,
+  Store,
+  Sun,
+  Ticket,
+  TrendingUp,
+  Users,
+  Wallet,
+  X,
+  type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { AccordionItem } from "@/components/ui/accordion";
-
-/* ------------------------------------------------------------------ */
-/* Helpers                                                             */
-/* ------------------------------------------------------------------ */
-
-const NAV_LINKS = [
-  { label: "Fitur", href: "#fitur" },
-  { label: "Harga", href: "#harga" },
-  { label: "Katalog", href: "#katalog" },
-  { label: "FAQ", href: "#faq" },
-];
 
 const LOGIN_URL = "https://merchant.zonakasir.web.id/";
 const REGISTER_URL = "https://merchant.zonakasir.web.id/";
-const CONTACT_URL = "https://wa.me/62859106997680?text=Halo%20Zona%20Kasir%2C%20saya%20tertarik%20dengan%20paket%20BUSINESS.";
+const WA_URL = "https://wa.me/62859106997680";
+const CONTACT_URL =
+  "https://wa.me/62859106997680?text=Halo%20Zona%20Kasir%2C%20saya%20tertarik%20dengan%20paket%20BUSINESS.";
+
+const NAV_LINKS = [
+  { label: "Fitur", href: "#fitur" },
+  { label: "Dashboard", href: "#dashboard" },
+  { label: "Harga", href: "#harga" },
+  { label: "FAQ", href: "#faq" },
+];
+
+const springEase = [0.16, 1, 0.3, 1] as const;
+
+// Teks brand yang otomatis menyesuaikan kontras di light dan dark.
+const BRAND_TEXT = "text-brand-700 dark:text-brand-300";
+
+function cn(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function Reveal({
   children,
   delay = 0,
-  className = "",
+  className,
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
 }) {
   const reduce = useReducedMotion();
+
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y: 20 }}
+      initial={reduce ? false : { opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      transition={{ duration: 0.64, delay, ease: springEase }}
       className={className}
     >
       {children}
@@ -75,479 +86,1075 @@ function Reveal({
   );
 }
 
-function SectionHeading({
+function ThemeToggle({ className }: { className?: string }) {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  const toggle = () => {
+    const next = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", next);
+    try {
+      localStorage.setItem("theme", next ? "dark" : "light");
+    } catch {}
+    setIsDark(next);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={isDark ? "Aktifkan mode terang" : "Aktifkan mode gelap"}
+      aria-pressed={isDark}
+      className={cn(
+        "grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-border bg-card text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        className
+      )}
+    >
+      <span className="relative h-5 w-5">
+        <Sun className="absolute inset-0 h-5 w-5 rotate-0 scale-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute inset-0 h-5 w-5 rotate-90 scale-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] dark:rotate-0 dark:scale-100" />
+      </span>
+    </button>
+  );
+}
+
+function Badge({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-2 rounded-xl border border-border bg-card/80 px-3 py-1.5 text-xs font-semibold text-brand-700 shadow-[0_12px_32px_-24px_rgba(25,135,209,0.55)] backdrop-blur dark:text-brand-300",
+        className
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+function IconBox({
+  icon: Icon,
+  className,
+}: {
+  icon: LucideIcon;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-transparent bg-accent text-accent-foreground",
+        className
+      )}
+    >
+      <Icon className="h-5 w-5" aria-hidden="true" />
+    </span>
+  );
+}
+
+function PrimaryLink({
+  href,
+  children,
+  className,
+  target,
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  target?: string;
+}) {
+  return (
+    <a
+      href={href}
+      target={target}
+      rel={target ? "noopener noreferrer" : undefined}
+      className={cn(
+        "group inline-flex min-h-12 items-center justify-center gap-3 rounded-2xl bg-brand-700 px-5 py-3 text-sm font-bold text-white shadow-[0_22px_50px_-28px_rgba(25,135,209,0.85)] transition-[transform,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:bg-brand-800 active:translate-y-0 active:scale-[0.98]",
+        className
+      )}
+    >
+      <span>{children}</span>
+      <span className="grid h-7 w-7 place-items-center rounded-xl bg-white/16 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      </span>
+    </a>
+  );
+}
+
+function SecondaryLink({
+  href,
+  children,
+  className,
+  target,
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  target?: string;
+}) {
+  return (
+    <a
+      href={href}
+      target={target}
+      rel={target ? "noopener noreferrer" : undefined}
+      className={cn(
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3 text-sm font-bold text-foreground shadow-[0_20px_46px_-34px_rgba(15,23,42,0.42)] transition-[transform,border-color,background-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-brand-300 hover:bg-accent active:translate-y-0 active:scale-[0.98]",
+        className
+      )}
+    >
+      {children}
+    </a>
+  );
+}
+
+function SectionIntro({
   eyebrow,
   title,
   desc,
+  align = "center",
 }: {
   eyebrow: string;
   title: string;
   desc?: string;
+  align?: "center" | "left";
 }) {
   return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
-      <Badge variant="soft" className="mb-4">
-        <Sparkles className="h-3.5 w-3.5" /> {eyebrow}
-      </Badge>
-      <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+    <div
+      className={cn(
+        "mb-12",
+        align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl"
+      )}
+    >
+      <p className={cn("mb-4 text-sm font-bold tracking-wide", BRAND_TEXT)}>
+        {eyebrow}
+      </p>
+      <h2 className="text-balance text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl lg:text-5xl">
         {title}
       </h2>
-      {desc && (
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+      {desc ? (
+        <p
+          className={cn(
+            "mt-5 text-base leading-8 text-muted-foreground sm:text-lg",
+            align === "center" && "mx-auto max-w-2xl"
+          )}
+        >
           {desc}
         </p>
-      )}
+      ) : null}
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Navbar                                                              */
-/* ------------------------------------------------------------------ */
-
 function Logo() {
   return (
-    <a href="#beranda" className="flex items-center gap-2.5" aria-label="Beranda Zona Kasir">
+    <a
+      href="#beranda"
+      className="flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+      aria-label="Beranda Zona Kasir"
+    >
       <img
         src="/zona-kasir-icon.png"
-        alt="Logo Zona Kasir - Aplikasi POS dan Kasir Online"
-        className="h-10 w-10 rounded-xl object-contain shadow-soft"
+        alt="Logo Zona Kasir"
+        className="h-10 w-10 rounded-2xl object-contain"
         width="40"
         height="40"
       />
-      <span className="text-xl font-black tracking-[0.04em] text-foreground">ZONAKASIR</span>
+      <span className="text-base font-extrabold tracking-[0.08em] text-foreground sm:text-lg">
+        ZONA KASIR
+      </span>
     </a>
   );
 }
 
 function Navbar() {
   const [open, setOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-md">
-      <nav className="container flex h-16 items-center justify-between" aria-label="Navigasi utama">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/90 shadow-[0_18px_60px_-44px_rgba(15,23,42,0.38)] backdrop-blur-xl">
+      <nav
+        className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
+        aria-label="Navigasi utama"
+      >
         <Logo />
-        <div className="hidden items-center gap-8 md:flex">
-          {NAV_LINKS.map((l) => (
+
+        <div className="hidden items-center gap-1 rounded-2xl border border-border bg-card/70 p-1 md:flex">
+          {NAV_LINKS.map((link) => (
             <a
-              key={l.href}
-              href={l.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand-600"
+              key={link.href}
+              href={link.href}
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors duration-300 hover:bg-accent hover:text-accent-foreground"
             >
-              {l.label}
+              {link.label}
             </a>
           ))}
         </div>
-        <div className="hidden items-center gap-3 md:flex">
-          <a href={LOGIN_URL}>
-            <Button variant="ghost" size="sm">
-              Login
-            </Button>
-          </a>
-          <a href={REGISTER_URL}>
-            <Button size="sm">Daftar Gratis</Button>
-          </a>
+
+        <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
+          <SecondaryLink href={LOGIN_URL} className="min-h-10 rounded-xl px-4 py-2">
+            Login
+          </SecondaryLink>
+          <PrimaryLink href={REGISTER_URL} className="min-h-10 rounded-xl px-4 py-2">
+            Mulai gratis
+          </PrimaryLink>
         </div>
-        <button
-          type="button"
-          className="grid h-10 w-10 place-items-center rounded-lg text-foreground md:hidden"
-          aria-label="Buka menu"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            className="grid h-11 w-11 place-items-center rounded-2xl border border-border bg-card text-foreground transition-colors hover:bg-accent"
+            aria-label={open ? "Tutup menu" : "Buka menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </nav>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="border-t border-border bg-background md:hidden"
-        >
-          <div className="container flex flex-col gap-1 py-4">
-            {NAV_LINKS.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
-              >
-                {l.label}
-              </a>
-            ))}
-            <div className="mt-2 flex flex-col gap-2">
-              <a href={LOGIN_URL}>
-                <Button variant="outline" className="w-full">
+
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.28, ease: springEase }}
+            className="border-t border-border bg-background md:hidden"
+          >
+            <div className="mx-auto grid max-w-7xl gap-2 px-4 py-5 sm:px-6">
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="rounded-2xl px-4 py-3 text-sm font-bold text-foreground hover:bg-accent"
+                >
+                  {link.label}
+                </a>
+              ))}
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <SecondaryLink href={LOGIN_URL} className="w-full">
                   Login
-                </Button>
-              </a>
-              <a href={REGISTER_URL}>
-                <Button className="w-full">Daftar Gratis</Button>
-              </a>
+                </SecondaryLink>
+                <PrimaryLink href={REGISTER_URL} className="w-full">
+                  Gratis
+                </PrimaryLink>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      )}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </header>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Hero + Dashboard mockup                                             */
-/* ------------------------------------------------------------------ */
-
-const HERO_HIGHLIGHTS = [
-  { icon: Monitor, text: "Komputer, tablet & smartphone" },
-  { icon: QrCode, text: "QRIS milik merchant sendiri" },
-  { icon: Store, text: "Cocok untuk retail & F&B" },
-  { icon: Sparkles, text: "Tersedia paket FREE, PRO & BUSINESS" },
+const HERO_METRICS = [
+  { label: "Transaksi hari ini", value: "128", tone: "text-foreground" },
+  { label: "Omzet", value: "Rp4,8jt", tone: BRAND_TEXT },
+  {
+    label: "Stok menipis",
+    value: "7 item",
+    tone: "text-amber-600 dark:text-amber-400",
+  },
 ];
 
-function DashboardMockup() {
-  const reduce = useReducedMotion();
+const RECEIPT_ITEMS = [
+  { name: "Kopi susu aren", qty: "2", price: "36.000" },
+  { name: "Croissant", qty: "1", price: "22.000" },
+  { name: "Es teh", qty: "1", price: "8.000" },
+];
+
+function HeroDashboardMockup() {
   return (
-    <div className="relative">
-      {/* main dashboard card */}
-      <Card className="overflow-hidden shadow-card">
-        <div className="flex items-center justify-between border-b border-border bg-secondary/50 px-5 py-3">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-brand-300" />
-            <span className="h-2.5 w-2.5 rounded-full bg-brand-200" />
-            <span className="h-2.5 w-2.5 rounded-full bg-brand-100" />
-          </div>
-          <span className="text-xs font-medium text-muted-foreground">
-            Dashboard Zona Kasir
-          </span>
+    <div className="relative mx-auto max-w-2xl lg:ml-auto">
+      <div className="absolute -right-3 top-10 hidden w-44 rotate-3 rounded-[1.65rem] border border-border bg-card p-4 shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)] sm:block">
+        <div className="mb-3 flex items-center justify-between">
+          <span className="text-xs font-bold text-muted-foreground">Struk</span>
+          <ReceiptText className={cn("h-4 w-4", BRAND_TEXT)} aria-hidden="true" />
         </div>
-        <CardContent className="space-y-4 p-5">
-          {/* stat row */}
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { label: "Omzet Hari Ini", value: "Rp4,8jt", up: "+12%" },
-              { label: "Transaksi", value: "128", up: "+8%" },
-              { label: "Laba Kotor", value: "Rp1,6jt", up: "+5%" },
-            ].map((s) => (
-              <div key={s.label} className="rounded-xl bg-secondary/60 p-3">
-                <p className="text-[11px] text-muted-foreground">{s.label}</p>
-                <p className="mt-1 text-base font-bold text-foreground">{s.value}</p>
-                <span className="text-[10px] font-semibold text-brand-600">
-                  {s.up}
+        <div className="space-y-2">
+          {RECEIPT_ITEMS.map((item) => (
+            <div key={item.name} className="flex justify-between gap-3 text-[11px]">
+              <span className="text-muted-foreground">
+                {item.qty}x {item.name}
+              </span>
+              <span className="font-semibold text-foreground">{item.price}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 border-t border-dashed border-border pt-3">
+          <div className="flex justify-between text-xs font-extrabold text-foreground">
+            <span>Total</span>
+            <span>Rp66.000</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute -left-2 bottom-8 hidden w-48 -rotate-2 rounded-[1.65rem] border border-transparent bg-accent p-4 shadow-[0_26px_72px_-44px_rgba(25,135,209,0.65)] sm:block">
+        <div className="flex items-center gap-3">
+          <span className={cn("grid h-10 w-10 place-items-center rounded-2xl bg-card", BRAND_TEXT)}>
+            <QrCode className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <div>
+            <p className={cn("text-xs font-semibold", BRAND_TEXT)}>QRIS merchant</p>
+            <p className="text-sm font-extrabold text-foreground">Manual check</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-[2rem] border border-border bg-muted p-2 shadow-[0_34px_110px_-72px_rgba(15,23,42,0.5)]">
+        <div className="overflow-hidden rounded-[1.55rem] border border-border bg-card">
+          <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-brand-500" />
+              <span className="h-2.5 w-2.5 rounded-full bg-brand-200" />
+              <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/30" />
+            </div>
+            <span className="rounded-lg bg-card px-3 py-1 text-[11px] font-bold text-muted-foreground">
+              Dashboard kasir
+            </span>
+          </div>
+
+          <div className="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="border-b border-border bg-[linear-gradient(180deg,hsl(var(--primary)/0.10),hsl(var(--card)/0.98))] p-4 text-foreground lg:border-b-0 lg:border-r">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground">Shift pagi</p>
+                  <p className="text-lg font-extrabold">Kopi Senja</p>
+                </div>
+                <span className="rounded-xl border border-brand-200/70 bg-card/80 px-3 py-1 text-xs font-bold text-brand-700 dark:border-brand-800 dark:text-brand-300">
+                  Online
                 </span>
               </div>
-            ))}
-          </div>
-          {/* mini chart */}
-          <div className="rounded-xl border border-border p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs font-semibold text-foreground">Penjualan 7 Hari</p>
-              <Badge variant="soft" className="text-[10px]">
-                <TrendingUp className="h-3 w-3" /> Naik
-              </Badge>
+              <img
+                src="/pos.png"
+                alt="Preview aplikasi kasir Zona Kasir pada perangkat toko"
+                width="1448"
+                height="1086"
+                loading="eager"
+                className="aspect-[4/3] rounded-2xl border border-border object-cover"
+                onError={(event) => {
+                  const image = event.currentTarget;
+                  if (!image.dataset.fallback) {
+                    image.dataset.fallback = "1";
+                    image.src = "/og-image.png";
+                  }
+                }}
+              />
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-border bg-card/70 p-3">
+                  <p className="text-[11px] text-muted-foreground">Item</p>
+                  <p className="mt-1 text-lg font-extrabold">42</p>
+                </div>
+                <div className="rounded-2xl border border-border bg-card/70 p-3">
+                  <p className="text-[11px] text-muted-foreground">Kasir</p>
+                  <p className="mt-1 text-lg font-extrabold">2 aktif</p>
+                </div>
+              </div>
             </div>
-            <div className="flex h-24 items-end gap-2">
-              {[42, 58, 50, 70, 64, 88, 76].map((h, i) => (
-                <motion.div
-                  key={i}
-                  initial={reduce ? false : { height: 0 }}
-                  whileInView={{ height: `${h}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.06 }}
-                  className="flex-1 rounded-t-md bg-gradient-to-t from-brand-500 to-brand-400"
-                />
-              ))}
-            </div>
-          </div>
-          {/* transaction list */}
-          <div className="space-y-2">
-            {[
-              { name: "Kopi Susu Gula Aren", qty: "x2", price: "Rp36.000", pay: "QRIS" },
-              { name: "Roti Bakar Cokelat", qty: "x1", price: "Rp18.000", pay: "Cash" },
-              { name: "Es Teh Manis", qty: "x3", price: "Rp24.000", pay: "Transfer" },
-            ].map((t) => (
-              <div
-                key={t.name}
-                className="flex items-center justify-between rounded-lg bg-secondary/40 px-3 py-2"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="grid h-7 w-7 place-items-center rounded-md bg-brand-100 text-brand-700">
-                    <ReceiptText className="h-3.5 w-3.5" />
-                  </span>
-                  <div>
-                    <p className="text-xs font-medium text-foreground">{t.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{t.qty}</p>
+
+            <div className="p-4 sm:p-5">
+              <div className="grid grid-cols-3 gap-3">
+                {HERO_METRICS.map((metric) => (
+                  <div
+                    key={metric.label}
+                    className="rounded-2xl border border-border bg-muted/50 p-3"
+                  >
+                    <p className="text-[11px] leading-4 text-muted-foreground">
+                      {metric.label}
+                    </p>
+                    <p className={cn("mt-2 text-base font-extrabold", metric.tone)}>
+                      {metric.value}
+                    </p>
                   </div>
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-border p-4">
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="text-sm font-extrabold text-foreground">
+                    Penjualan 7 hari
+                  </p>
+                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                    +18,4%
+                  </span>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs font-semibold text-foreground">{t.price}</p>
-                  <p className="text-[10px] text-brand-600">{t.pay}</p>
+                <div className="flex h-28 items-end gap-2">
+                  {[46, 58, 42, 72, 64, 88, 76].map((height, index) => (
+                    <motion.span
+                      key={`${height}-${index}`}
+                      initial={{ scaleY: 0.2 }}
+                      whileInView={{ scaleY: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.55, delay: index * 0.035, ease: springEase }}
+                      style={{ height: `${height}%` }}
+                      className="origin-bottom flex-1 rounded-t-xl bg-brand-500"
+                    />
+                  ))}
                 </div>
               </div>
-            ))}
+
+              <div className="mt-4 space-y-2">
+                {[
+                  { icon: Search, text: "Cari produk cepat dengan barcode" },
+                  { icon: PackageMinus, text: "Stok berkurang otomatis" },
+                  { icon: Printer, text: "Cetak struk thermal 58mm/80mm" },
+                ].map((item) => (
+                  <div
+                    key={item.text}
+                    className="flex items-center gap-3 rounded-2xl bg-muted/50 px-3 py-2.5"
+                  >
+                    <span className={cn("grid h-8 w-8 place-items-center rounded-xl bg-card", BRAND_TEXT)}>
+                      <item.icon className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                    <span className="text-sm font-semibold text-muted-foreground">
+                      {item.text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* floating QRIS card */}
-      <motion.div
-        animate={reduce ? undefined : { y: [0, -10, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -right-4 -top-5 hidden w-40 sm:block"
-      >
-        <Card className="shadow-card">
-          <CardContent className="p-4">
-            <div className="mb-2 flex items-center gap-2">
-              <QrCode className="h-4 w-4 text-brand-600" />
-              <span className="text-xs font-semibold text-foreground">QRIS Merchant</span>
-            </div>
-            <div className="grid h-16 w-full place-items-center rounded-lg bg-secondary/70">
-              <QrCode className="h-10 w-10 text-brand-700" />
-            </div>
-            <p className="mt-2 text-center text-[10px] text-muted-foreground">
-              Dana langsung ke rekening Anda
-            </p>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* floating stock card */}
-      <motion.div
-        animate={reduce ? undefined : { y: [0, 10, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -bottom-6 -left-4 hidden w-44 sm:block"
-      >
-        <Card className="shadow-card">
-          <CardContent className="p-4">
-            <div className="mb-2 flex items-center gap-2">
-              <Boxes className="h-4 w-4 text-brand-600" />
-              <span className="text-xs font-semibold text-foreground">Stok Otomatis</span>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-muted-foreground">Gula Aren</span>
-                <span className="font-semibold text-foreground">24</span>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-muted-foreground">Susu UHT</span>
-                <span className="font-semibold text-amber-600">5 menipis</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
 
 function Hero() {
   return (
-    <section id="beranda" className="relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-grid [background-size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
-      <div className="absolute -top-32 right-0 -z-10 h-72 w-72 rounded-full bg-brand-200/40 blur-3xl" />
-      <div className="container grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
+    <section
+      id="beranda"
+      className="relative overflow-hidden border-b border-border bg-background"
+    >
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_-10%,hsl(var(--primary)/0.16),transparent_42%),radial-gradient(circle_at_88%_20%,hsl(var(--emerald)/0.08),transparent_46%)]"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0 bg-hero-grid"
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto grid min-h-[calc(100dvh-5rem)] max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[0.86fr_1.14fr] lg:px-8 lg:py-20">
         <div>
           <Reveal>
-            <Badge variant="soft" className="mb-5">
-              <img src="/zona-kasir-icon.png" alt="" aria-hidden="true" className="h-4 w-4 rounded object-contain" />
-              POS Modern untuk Bisnis yang Ingin Tumbuh
+            <Badge className="mb-6">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              POS online untuk operasional harian
             </Badge>
           </Reveal>
-          {/* H1 — single, keyword-rich */}
-          <Reveal delay={0.05}>
-            <h1 className="text-balance text-4xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
-              Transaksi Lebih Cepat,{" "}
-              <span className="text-brand-600">Bisnis Lebih Terkontrol</span>
+
+          <Reveal delay={0.04}>
+            <h1 className="max-w-4xl text-balance text-4xl font-extrabold leading-[1.04] tracking-[-0.035em] text-foreground sm:text-5xl lg:text-6xl">
+              Kasir cepat, stok rapi, laporan langsung terbaca
             </h1>
           </Reveal>
-          <Reveal delay={0.1}>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Zona Kasir adalah aplikasi kasir online dan aplikasi POS modern
-              untuk mengelola transaksi, stok barang, QRIS, katalog, dan laporan
-              usaha dalam satu platform. Mulai sebagai aplikasi kasir gratis,
-              lalu tingkatkan fitur saat bisnis berkembang.
+
+          <Reveal delay={0.08}>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
+              Zona Kasir membantu toko, coffee shop, retail, dan UMKM mencatat
+              transaksi, memantau stok, mencetak struk, dan melihat penjualan
+              tanpa rekap manual.
             </p>
           </Reveal>
-          <Reveal delay={0.15}>
+
+          <Reveal delay={0.12}>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href={REGISTER_URL}>
-                <Button size="lg" className="w-full sm:w-auto">
-                  Mulai Gratis <ArrowRight className="h-4 w-4" />
-                </Button>
-              </a>
-              <a href="#fitur">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                  Lihat Fitur
-                </Button>
-              </a>
+              <PrimaryLink href={REGISTER_URL} className="w-full sm:w-auto">
+                Mulai gratis
+              </PrimaryLink>
+              <SecondaryLink href="#dashboard" className="w-full sm:w-auto">
+                Lihat demo fitur
+              </SecondaryLink>
             </div>
           </Reveal>
-          <Reveal delay={0.2}>
-            <ul className="mt-9 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {HERO_HIGHLIGHTS.map((h) => (
-                <li key={h.text} className="flex items-center gap-2.5">
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand-100 text-brand-700">
-                    <h.icon className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <span className="text-sm font-medium text-foreground">{h.text}</span>
-                </li>
+
+          <Reveal delay={0.16}>
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {[
+                { value: "Rp0", label: "paket awal" },
+                { value: "20", label: "produk gratis" },
+                { value: "58/80mm", label: "struk thermal" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-border bg-card/70 p-4"
+                >
+                  <p className="text-2xl font-extrabold tracking-[-0.02em] text-foreground">
+                    {item.value}
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-muted-foreground">
+                    {item.label}
+                  </p>
+                </div>
               ))}
-            </ul>
+            </div>
           </Reveal>
         </div>
-        <Reveal delay={0.15} className="lg:pl-6">
-          <DashboardMockup />
+
+        <Reveal delay={0.1}>
+          <HeroDashboardMockup />
         </Reveal>
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Keunggulan                                                          */
-/* ------------------------------------------------------------------ */
-
-const KEUNGGULAN = [
+const TRUST_STATS = [
   {
-    icon: ShoppingCart,
-    title: "Kasir cepat & mudah",
-    desc: "Antarmuka kasir yang ringan dan simpel, mudah dipakai siapa saja tanpa training panjang.",
+    icon: Store,
+    value: "Retail, F&B, UMKM",
+    label: "alur dibuat untuk usaha kecil yang butuh kasir mudah dipakai",
   },
   {
     icon: QrCode,
-    title: "QRIS mandiri merchant",
-    desc: "Pakai QRIS statis milik usaha Anda sendiri. Dana pembayaran langsung masuk ke rekening Anda.",
+    value: "QRIS merchant",
+    label: "tampilkan kode pembayaran usaha di alur kasir yang sama",
   },
   {
-    icon: Boxes,
-    title: "Stok otomatis & tercatat",
-    desc: "Setiap transaksi mengurangi stok otomatis, lengkap dengan peringatan stok menipis.",
+    icon: MonitorSmartphone,
+    value: "Multi device",
+    label: "bisa dibuka dari laptop kasir, tablet, atau smartphone",
   },
   {
-    icon: LinkIcon,
-    title: "Katalog online",
-    desc: "Punya etalase produk online yang bisa dibagikan, tanpa perlu membuat website tambahan.",
-  },
-  {
-    icon: BarChart3,
-    title: "Laporan omzet & laba",
-    desc: "Pantau omzet, modal, dan laba kotor usaha Anda secara jelas dan real-time.",
-  },
-  {
-    icon: ReceiptText,
-    title: "Open Bill cafe & resto",
-    desc: "Buka tagihan per meja untuk cafe dan restoran. Tersedia khusus paket PRO.",
-    pro: true,
+    icon: Layers,
+    value: "Free ke Pro",
+    label: "mulai sederhana, lalu upgrade saat produk dan tim bertambah",
   },
 ];
 
-function Keunggulan() {
+function TrustStrip() {
   return (
-    <section id="keunggulan" className="border-t border-border bg-secondary/30 py-20">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Keunggulan"
-          title="Kenapa Memilih Zona Kasir?"
-          desc="Semua yang dibutuhkan toko, UMKM, dan F&B untuk berjualan lebih cepat dan terkontrol — dalam satu aplikasi kasir."
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {KEUNGGULAN.map((f, i) => (
-            <Reveal key={f.title} delay={i * 0.05}>
-              <Card className="group h-full transition-all hover:-translate-y-1 hover:shadow-card">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="grid h-12 w-12 place-items-center rounded-xl bg-brand-100 text-brand-700 transition-colors group-hover:bg-brand-600 group-hover:text-white">
-                      <f.icon className="h-6 w-6" aria-hidden="true" />
-                    </span>
-                    {f.pro && <Badge>PRO</Badge>}
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground">{f.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {f.desc}
-                  </p>
-                </CardContent>
-              </Card>
-            </Reveal>
-          ))}
-        </div>
+    <section className="bg-page-base py-10" aria-label="Indikator kepercayaan">
+      <div className="mx-auto grid max-w-7xl gap-px overflow-hidden rounded-[2rem] border border-border bg-border px-0 sm:grid-cols-2 lg:grid-cols-4">
+        {TRUST_STATS.map((stat, index) => (
+          <Reveal key={stat.value} delay={index * 0.04}>
+            <article className="h-full bg-card p-6">
+              <IconBox icon={stat.icon} className="h-10 w-10 rounded-2xl" />
+              <h2 className="mt-5 text-lg font-extrabold text-foreground">
+                {stat.value}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                {stat.label}
+              </p>
+            </article>
+          </Reveal>
+        ))}
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Fitur POS                                                           */
-/* ------------------------------------------------------------------ */
-
-const FITUR = [
-  { icon: ShoppingCart, title: "Transaksi kasir", desc: "Proses penjualan cepat dengan tampilan kasir yang ringan." },
-  { icon: CreditCard, title: "Cash, QRIS & Transfer", desc: "Terima pembayaran tunai, QRIS merchant, dan transfer bank." },
-  { icon: Printer, title: "Cetak struk thermal", desc: "Dukungan printer thermal ukuran 58mm dan 80mm." },
-  { icon: Barcode, title: "Produk & barcode", desc: "Kelola produk lengkap dengan dukungan barcode." },
-  { icon: FileSpreadsheet, title: "Import Excel/CSV", desc: "Tambah produk massal lewat impor file Excel atau CSV." },
-  { icon: Ticket, title: "Voucher & promo", desc: "Buat voucher dan promo untuk pelanggan.", pro: true },
-  { icon: Percent, title: "Pajak & service charge", desc: "Atur PPN dan service charge secara terpisah." },
-  { icon: Share2, title: "Katalog shareable", desc: "Bagikan katalog produk online ke pelanggan." },
-  { icon: Users, title: "Multiuser admin & kasir", desc: "Kelola hak akses untuk admin dan kasir." },
+const FEATURES = [
+  {
+    icon: ShoppingCart,
+    title: "Kasir POS cepat",
+    desc: "Tampilan transaksi dibuat ringkas agar staf bisa memilih produk, metode bayar, dan cetak struk tanpa banyak langkah.",
+    points: ["Cash, QRIS, transfer", "Diskon transaksi", "Struk thermal"],
+    className: "lg:col-span-5",
+  },
+  {
+    icon: Boxes,
+    title: "Produk dan stok",
+    desc: "Kelola SKU, barcode, kategori, harga, dan stok masuk-keluar dari satu tempat.",
+    points: ["Import Excel/CSV", "Stok otomatis", "Alert stok tipis"],
+    className: "lg:col-span-7",
+  },
+  {
+    icon: Store,
+    title: "Katalog online",
+    desc: "Bagikan link etalase agar pelanggan bisa melihat produk dan info toko sebelum datang.",
+    points: ["Link toko", "Kategori produk", "Info kontak"],
+    className: "lg:col-span-4",
+  },
+  {
+    icon: ReceiptText,
+    title: "Open Bill F&B",
+    desc: "Cocok untuk cafe dan resto yang perlu menahan tagihan sebelum pelanggan membayar.",
+    points: ["Tagihan berjalan", "Service charge", "Pajak"],
+    className: "lg:col-span-4",
+  },
+  {
+    icon: BarChart3,
+    title: "Laporan penjualan",
+    desc: "Lihat omzet, modal, laba kotor, produk terlaris, kasir aktif, dan stok menipis tanpa rekap spreadsheet.",
+    points: ["Omzet harian", "Produk terlaris", "Rekap kasir"],
+    className: "lg:col-span-4",
+  },
 ];
 
-function FiturPOS() {
+function FeatureCard({ feature, index }: { feature: (typeof FEATURES)[number]; index: number }) {
   return (
-    <section id="fitur" className="py-20">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Fitur"
-          title="Fitur Aplikasi Kasir Online Zona Kasir"
-          desc="Fitur lengkap aplikasi POS untuk operasional harian toko dan F&B, dari transaksi hingga laporan."
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {FITUR.map((f, i) => (
-            <Reveal key={f.title} delay={(i % 3) * 0.05}>
-              <div className="flex h-full gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft transition-all hover:border-brand-200 hover:shadow-card">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600">
-                  <f.icon className="h-5 w-5" aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-foreground">{f.title}</h3>
-                    {f.pro && <Badge className="text-[10px]">PRO</Badge>}
-                  </div>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                    {f.desc}
-                  </p>
-                </div>
-              </div>
-            </Reveal>
+    <Reveal delay={index * 0.04} className={feature.className}>
+      <article className="group h-full rounded-[2rem] border border-border bg-card p-6 shadow-[0_18px_60px_-48px_rgba(15,23,42,0.5)] transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-brand-300 hover:shadow-[0_28px_80px_-56px_rgba(25,135,209,0.5)] dark:hover:border-brand-700">
+        <IconBox icon={feature.icon} />
+        <h3 className="mt-6 text-xl font-extrabold tracking-[-0.01em] text-foreground">
+          {feature.title}
+        </h3>
+        <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
+          {feature.desc}
+        </p>
+        <div className="mt-6 flex flex-wrap gap-2">
+          {feature.points.map((point) => (
+            <span
+              key={point}
+              className="rounded-xl bg-muted px-3 py-2 text-xs font-bold text-foreground/80"
+            >
+              {point}
+            </span>
           ))}
         </div>
+      </article>
+    </Reveal>
+  );
+}
+
+const FEATURE_ROWS = [
+  { icon: CreditCard, text: "Cash, QRIS, transfer" },
+  { icon: Barcode, text: "Barcode dan SKU" },
+  { icon: FileSpreadsheet, text: "Import produk Excel/CSV" },
+  { icon: Ticket, text: "Voucher dan promo" },
+  { icon: Percent, text: "Pajak dan service charge" },
+  { icon: Users, text: "Admin dan kasir" },
+  { icon: Printer, text: "Printer thermal" },
+  { icon: PackageCheck, text: "Stok otomatis" },
+];
+
+function Features() {
+  return (
+    <section id="fitur" className="bg-page-surface py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="mx-auto mt-8 max-w-2xl rounded-xl border border-border bg-secondary/40 px-5 py-3 text-center text-xs text-muted-foreground">
-            Catatan: QRIS yang digunakan adalah QRIS statis milik merchant dengan
-            konfirmasi pembayaran manual.
-          </p>
+          <SectionIntro
+            eyebrow="Fitur utama"
+            title="Modul inti untuk toko yang ingin lebih tertib"
+            desc="Fitur disusun mengikuti pekerjaan harian: transaksi di meja kasir, update stok, katalog produk, sampai laporan yang bisa dibaca pemilik usaha."
+          />
+        </Reveal>
+
+        <div className="grid gap-5 lg:grid-cols-12">
+          {FEATURES.map((feature, index) => (
+            <FeatureCard key={feature.title} feature={feature} index={index} />
+          ))}
+        </div>
+
+        <Reveal delay={0.14}>
+          <div className="mt-6 grid gap-px overflow-hidden rounded-[2rem] border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+            {FEATURE_ROWS.map((row) => (
+              <div key={row.text} className="flex items-center gap-3 bg-card p-4">
+                <IconBox icon={row.icon} className="h-9 w-9 rounded-xl" />
+                <span className="text-sm font-bold text-foreground">{row.text}</span>
+              </div>
+            ))}
+          </div>
         </Reveal>
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Pricing                                                             */
-/* ------------------------------------------------------------------ */
+const BENEFITS = [
+  {
+    title: "Tidak lagi menebak stok",
+    desc: "Barang keluar tercatat dari transaksi, sehingga pembelian ulang bisa diputuskan dari data.",
+  },
+  {
+    title: "Kasir baru lebih cepat belajar",
+    desc: "Alur transaksi dibuat sederhana, cocok untuk tim kecil yang sering berganti shift.",
+  },
+  {
+    title: "Laporan siap dibaca pemilik",
+    desc: "Omzet, laba kotor, dan produk terlaris tampil dalam ringkasan yang mudah dipahami.",
+  },
+  {
+    title: "Toko terlihat lebih profesional",
+    desc: "Struk thermal, katalog online, dan QRIS merchant memberi pengalaman yang lebih rapi ke pelanggan.",
+  },
+];
+
+function Benefits() {
+  return (
+    <section className="bg-page-base py-16 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+          <Reveal>
+            <SectionIntro
+              eyebrow="Benefit untuk pemilik usaha"
+              title="Lebih mudah mengontrol toko tanpa menambah kerumitan"
+              desc="Zona Kasir mengurangi pekerjaan manual yang biasanya menyita waktu: menghitung stok, mengumpulkan rekap kasir, dan menyusun laporan penjualan."
+              align="left"
+            />
+            <ul className="mt-7 grid gap-2.5 sm:grid-cols-2">
+              {[
+                "Transaksi lebih cepat",
+                "Stok lebih terkontrol",
+                "Rekap kasir lebih mudah",
+                "Laporan siap dibaca pemilik usaha",
+              ].map((item) => (
+                <li
+                  key={item}
+                  className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-foreground"
+                >
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+                    <Check className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7">
+              <PrimaryLink href={REGISTER_URL}>Coba mulai gratis</PrimaryLink>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.06}>
+            <figure className="overflow-hidden rounded-[2rem] border border-border bg-card shadow-[0_24px_70px_-60px_rgba(15,23,42,0.5)]">
+              <picture>
+                <source srcSet="/assets/owner.webp" type="image/webp" />
+                <img
+                  src="/assets/owner.jpg"
+                  alt="Pemilik usaha melihat laporan closing kasir Zona Kasir"
+                  width="1200"
+                  height="900"
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover object-top"
+                  onError={(event) => {
+                    const image = event.currentTarget;
+                    if (!image.dataset.fallback) {
+                      image.dataset.fallback = "1";
+                      image.src = "/og-image.png";
+                    }
+                  }}
+                />
+              </picture>
+              <figcaption className="border-t border-border bg-muted/40 px-4 py-2.5 text-xs text-muted-foreground">
+                Laporan closing yang mudah dipahami pemilik usaha.
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+          {BENEFITS.map((benefit, index) => (
+            <Reveal key={benefit.title} delay={index * 0.05}>
+              <article className="flex h-full flex-col rounded-[2rem] border border-border bg-surface p-6">
+                <span className={cn("text-sm font-extrabold", BRAND_TEXT)}>
+                  0{index + 1}
+                </span>
+                <h3 className="mt-4 text-lg font-extrabold tracking-[-0.01em] text-foreground">
+                  {benefit.title}
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  {benefit.desc}
+                </p>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const USE_CASES = [
+  {
+    icon: Coffee,
+    title: "Coffee shop dan cafe",
+    desc: "Open Bill, pajak, service charge, struk thermal, dan laporan menu terlaris.",
+  },
+  {
+    icon: ShoppingBag,
+    title: "Retail dan minimarket",
+    desc: "Barcode, stok otomatis, produk banyak, dan pencarian cepat di meja kasir.",
+  },
+  {
+    icon: Store,
+    title: "Toko kelontong",
+    desc: "Mulai dari pencatatan transaksi dasar tanpa biaya bulanan di awal.",
+  },
+  {
+    icon: Building2,
+    title: "UMKM berkembang",
+    desc: "Upgrade saat mulai butuh kasir tambahan, voucher, dan laporan lebih lengkap.",
+  },
+];
+
+function UseCases() {
+  return (
+    <section className="bg-page-base py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <SectionIntro
+            eyebrow="Cocok untuk siapa"
+            title="Dibuat untuk usaha yang butuh sistem kasir rapi, bukan sistem yang rumit"
+            desc="Setiap jenis usaha bisa memakai fitur inti yang sama, lalu mengaktifkan fitur Pro saat operasional mulai lebih padat."
+          />
+        </Reveal>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {USE_CASES.map((item, index) => (
+            <Reveal key={item.title} delay={index * 0.04}>
+              <article className="h-full rounded-[2rem] border border-border bg-card p-6">
+                <IconBox icon={item.icon} />
+                <h3 className="mt-7 text-lg font-extrabold text-foreground">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {item.desc}
+                </p>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const DASHBOARD_STATS = [
+  { label: "Omzet bersih", value: "Rp48,2jt", icon: Wallet },
+  { label: "Modal / HPP", value: "Rp31,5jt", icon: Boxes },
+  { label: "Laba kotor", value: "Rp16,7jt", icon: TrendingUp },
+  { label: "Transaksi", value: "1.284", icon: ReceiptText },
+];
+
+const CATALOG_ITEMS = [
+  { name: "Kopi Susu Gula Aren", category: "Minuman", price: "Rp18.000" },
+  { name: "Americano", category: "Minuman", price: "Rp15.000" },
+  { name: "Croissant Butter", category: "Roti", price: "Rp22.000" },
+];
+
+function DashboardPreview() {
+  return (
+    <section id="dashboard" className="bg-page-surface py-16 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <SectionIntro
+            eyebrow="Preview dashboard"
+            title="Data transaksi, stok, dan katalog ada dalam satu alur kerja"
+            desc="Contoh tampilan berikut menggambarkan bagaimana pemilik usaha bisa melihat performa toko dan mengelola katalog tanpa berpindah-pindah alat."
+          />
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <div className="mb-7 mt-8 grid items-stretch gap-5 lg:grid-cols-2">
+            <figure className="relative overflow-hidden rounded-[2rem] border border-border bg-card shadow-[0_30px_90px_-68px_rgba(15,23,42,0.5)]">
+              <picture>
+                <source srcSet="/assets/presentasi.webp" type="image/webp" />
+                <img
+                  src="/assets/presentasi.jpg"
+                  alt="Presentasi dashboard laporan Zona Kasir"
+                  width="1280"
+                  height="720"
+                  loading="lazy"
+                  className="aspect-[16/9] h-full w-full object-cover object-center"
+                  onError={(event) => {
+                    const image = event.currentTarget;
+                    if (!image.dataset.fallback) {
+                      image.dataset.fallback = "1";
+                      image.src = "/og-image.png";
+                    }
+                  }}
+                />
+              </picture>
+              <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-slate-900/55 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                Dashboard real-time
+              </span>
+            </figure>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                { icon: Boxes, title: "Stok otomatis tercatat", desc: "Setiap penjualan langsung memotong stok produk." },
+                { icon: QrCode, title: "QRIS merchant sendiri", desc: "Terima pembayaran QRIS atas nama tokomu." },
+                { icon: FileSpreadsheet, title: "Laporan harian rapi", desc: "Omzet, laba, dan closing kasir per hari." },
+                { icon: MonitorSmartphone, title: "Tablet & desktop", desc: "Jalan di browser, tanpa instal aplikasi." },
+              ].map((feature) => (
+                <article
+                  key={feature.title}
+                  className="flex h-full flex-col rounded-[1.5rem] border border-border bg-card p-5"
+                >
+                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+                    <feature.icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-4 text-sm font-extrabold text-foreground">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-6 text-muted-foreground">
+                    {feature.desc}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="grid items-stretch gap-5 lg:grid-cols-[1.25fr_0.75fr]">
+          <Reveal>
+            <div className="overflow-hidden rounded-[2rem] border border-border bg-card shadow-[0_30px_90px_-68px_rgba(15,23,42,0.5)]">
+              <div className="flex flex-col gap-4 border-b border-border bg-muted/50 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-lg font-extrabold text-foreground">
+                    Ringkasan bulan ini
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Omzet, HPP, laba, transaksi, dan performa produk.
+                  </p>
+                </div>
+                <Badge>
+                  <BarChart3 className="h-3.5 w-3.5" aria-hidden="true" />
+                  Laporan usaha
+                </Badge>
+              </div>
+
+              <div className="grid gap-px bg-border sm:grid-cols-4">
+                {DASHBOARD_STATS.map((stat) => (
+                  <div key={stat.label} className="bg-card p-5">
+                    <stat.icon className={cn("h-5 w-5", BRAND_TEXT)} aria-hidden="true" />
+                    <p className="mt-5 text-xs font-semibold text-muted-foreground">
+                      {stat.label}
+                    </p>
+                    <p className="mt-1 text-2xl font-extrabold tracking-[-0.02em] text-foreground">
+                      {stat.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid gap-6 p-5 lg:grid-cols-[1fr_0.72fr]">
+                <div className="rounded-[1.5rem] border border-border p-5">
+                  <div className="mb-5 flex items-center justify-between">
+                    <p className="text-sm font-extrabold text-foreground">
+                      Penjualan 12 minggu
+                    </p>
+                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                      Stabil naik
+                    </span>
+                  </div>
+                  <div className="flex h-52 items-end gap-2">
+                    {[52, 64, 48, 70, 66, 82, 76, 92, 84, 98, 88, 100].map(
+                      (height, index) => (
+                        <motion.span
+                          key={`${height}-${index}`}
+                          initial={{ scaleY: 0.08 }}
+                          whileInView={{ scaleY: 1 }}
+                          viewport={{ once: true }}
+                          transition={{
+                            duration: 0.58,
+                            delay: index * 0.025,
+                            ease: springEase,
+                          }}
+                          style={{ height: `${height}%` }}
+                          className="origin-bottom flex-1 rounded-t-xl bg-brand-500"
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex h-full flex-col rounded-[1.5rem] border border-brand-200/70 bg-accent p-5 dark:border-brand-900/70">
+                  <div className="flex items-center gap-3">
+                    <IconBox icon={PackageMinus} className="bg-card text-brand-700 dark:text-brand-300" />
+                    <div>
+                      <p className="text-sm font-extrabold text-foreground">Stok menipis</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Bahan dan produk yang perlu dicek.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-5 flex flex-1 flex-col justify-center gap-3">
+                    {[
+                      { name: "Susu UHT", qty: "5 tersisa" },
+                      { name: "Gula aren", qty: "8 tersisa" },
+                      { name: "Cup 12 oz", qty: "14 tersisa" },
+                    ].map((item) => (
+                      <div
+                        key={item.name}
+                        className="flex items-center justify-between rounded-2xl bg-card/80 px-3 py-2.5 text-sm text-foreground"
+                      >
+                        <span>{item.name}</span>
+                        <span className="font-bold">{item.qty}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <div className="h-full rounded-[2rem] border border-border bg-card p-4">
+              <div className="rounded-[1.55rem] bg-brand-700 p-5 text-white">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15">
+                    <Coffee className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <div>
+                    <h3 className="font-extrabold">Kopi Senja</h3>
+                    <p className="text-xs text-white/75">
+                      zonakasir.web.id/store/kopi-senja
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3 pt-4">
+                {CATALOG_ITEMS.map((item) => (
+                  <div
+                    key={item.name}
+                    className="flex items-center justify-between gap-4 rounded-[1.35rem] bg-muted/50 p-4"
+                  >
+                    <div>
+                      <p className="text-sm font-extrabold text-foreground">
+                        {item.name}
+                      </p>
+                      <p className="mt-1 text-xs font-medium text-muted-foreground">
+                        {item.category}
+                      </p>
+                    </div>
+                    <p className={cn("shrink-0 text-sm font-extrabold", BRAND_TEXT)}>
+                      {item.price}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 rounded-[1.35rem] border border-dashed border-brand-300/60 bg-card p-4">
+                <p className="text-sm font-extrabold text-foreground">
+                  Katalog sebagai etalase
+                </p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Produk, harga, kategori, dan info toko tampil rapi untuk
+                  pelanggan. Transaksi tetap dicatat lewat POS.
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 const PLANS = [
   {
     name: "FREE",
     price: "Rp0",
     period: "selamanya",
-    desc: "Cocok untuk mulai jualan.",
+    desc: "Untuk mulai mencatat transaksi dan produk dasar tanpa biaya bulanan.",
     cta: "Mulai Gratis",
     href: REGISTER_URL,
     highlight: false,
     features: [
-      "Maksimal 50 produk",
+      "Maksimal 20 produk",
       "1 akun kasir",
       "Kasir POS",
-      "QRIS merchant",
+      "Tampilan QRIS merchant",
       "Katalog online",
-      "Import produk sampai batas plan",
       "Struk dengan branding Zona Kasir",
     ],
   },
@@ -555,347 +1162,102 @@ const PLANS = [
     name: "PRO",
     price: "Rp50.000",
     period: "/bulan",
-    desc: "Cocok untuk toko/cafe yang mulai berkembang.",
-    cta: "Upgrade PRO",
+    desc: "Untuk toko dan cafe yang mulai butuh operasional lebih lengkap.",
+    cta: "Upgrade Pro",
     href: REGISTER_URL,
     highlight: true,
     features: [
-      "Produk lebih dari 50",
+      "Produk tanpa batas",
       "Multiple kasir",
       "Open Bill",
-      "Voucher/promo",
-      "Pajak & service charge",
+      "Voucher dan promo",
+      "Pajak dan service charge",
       "Rekapitulasi laporan lengkap",
       "Struk tanpa branding Zona Kasir",
     ],
   },
   {
     name: "BUSINESS",
-    price: "Mulai Rp1 jutaan",
-    period: "/tahun",
-    desc: "Cocok untuk bisnis yang butuh sistem lebih profesional.",
-    cta: "Hubungi Kami",
+    price: "Custom",
+    period: "sesuai kebutuhan",
+    desc: "Untuk bisnis yang butuh setup khusus, penyesuaian brand, dan alur pembayaran lebih profesional.",
+    cta: "Konsultasi Business",
     href: CONTACT_URL,
+    target: "_blank",
     highlight: false,
     features: [
-      "Semua fitur PRO",
-      "Custom aplikasi / custom branding",
-      "Setup khusus",
-      "Payment gateway QRIS dinamis Midtrans",
-      "Status pembayaran otomatis",
-      "Webhook pembayaran",
-      "Priority support",
+      "Custom aplikasi dan branding",
+      "Setup operasional sesuai kebutuhan",
+      "Alur pembayaran terintegrasi",
+      "Pendampingan implementasi",
+      "Konfigurasi outlet dan tim",
+      "Prioritas penyesuaian fitur",
     ],
   },
 ];
 
 function Pricing() {
   return (
-    <section id="harga" className="border-t border-border bg-secondary/30 py-20">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Harga"
-          title="Paket Harga: FREE, PRO, dan BUSINESS"
-          desc="Mulai gratis tanpa biaya. Upgrade ke PRO Rp50.000/bulan saat usaha berkembang, atau BUSINESS mulai Rp1 jutaan/tahun untuk custom aplikasi & payment gateway QRIS dinamis."
-        />
-        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {PLANS.map((p, i) => (
-            <Reveal key={p.name} delay={i * 0.08}>
-              <Card
-                className={
-                  p.highlight
-                    ? "relative h-full border-brand-300 ring-2 ring-brand-500 shadow-card"
-                    : "h-full"
-                }
-              >
-                {p.highlight && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge>Paling Populer</Badge>
-                  </div>
+    <section id="harga" className="bg-page-accent py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <SectionIntro
+            eyebrow="Pricing"
+            title="Mulai gratis, upgrade saat operasional mulai ramai"
+            desc="Paket dibuat sederhana agar pemilik usaha bisa mencoba dulu, lalu pindah ke Pro ketika produk, kasir, dan kebutuhan laporan bertambah."
+          />
+        </Reveal>
+
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-3">
+          {PLANS.map((plan, index) => (
+            <Reveal key={plan.name} delay={index * 0.05}>
+              <article
+                className={cn(
+                  "relative flex h-full flex-col rounded-[2rem] border bg-card p-6 shadow-[0_26px_80px_-60px_rgba(15,23,42,0.48)]",
+                  plan.highlight
+                    ? "border-brand-400 ring-4 ring-brand-500/15 dark:ring-brand-500/25"
+                    : "border-border"
                 )}
-                <CardContent className="flex h-full flex-col p-7">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-bold text-foreground">{p.name}</h3>
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
-                  <div className="mt-5 flex items-end gap-1">
-                    <span className="text-4xl font-extrabold tracking-tight text-foreground">
-                      {p.price}
-                    </span>
-                    <span className="pb-1 text-sm text-muted-foreground">{p.period}</span>
-                  </div>
-                  <ul className="mt-6 flex-1 space-y-3">
-                    {p.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2.5 text-sm">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" />
-                        <span className="text-foreground/90">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <a href={p.href} target={p.name === "BUSINESS" ? "_blank" : undefined} rel={p.name === "BUSINESS" ? "noopener noreferrer" : undefined} className="mt-7">
-                    <Button
-                      className="w-full"
-                      variant={p.highlight ? "default" : "outline"}
-                      size="lg"
-                    >
-                      {p.cta}
-                    </Button>
-                  </a>
-                </CardContent>
-              </Card>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Katalog Online                                                      */
-/* ------------------------------------------------------------------ */
-
-const KATALOG_POINTS = [
-  "Produk tampil online dengan rapi",
-  "Bisa dibagikan ke pelanggan lewat satu link",
-  "Cocok untuk UMKM yang belum punya website",
-];
-
-function KatalogOnline() {
-  return (
-    <section id="katalog" className="py-20">
-      <div className="container grid items-center gap-12 lg:grid-cols-2">
-        <Reveal>
-          <Badge variant="soft" className="mb-4">
-            <LinkIcon className="h-3.5 w-3.5" /> Katalog Online
-          </Badge>
-          <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Katalog Online untuk Setiap Toko
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Setiap merchant mendapat link katalog publik seperti{" "}
-            <code className="rounded-md bg-secondary px-1.5 py-0.5 text-sm font-medium text-brand-700">
-              /store/{"{slug}"}
-            </code>
-            . Seperti Linktree, tapi lengkap dengan etalase produk.
-          </p>
-          <ul className="mt-6 space-y-3">
-            {KATALOG_POINTS.map((p) => (
-              <li key={p} className="flex items-center gap-3">
-                <span className="grid h-6 w-6 place-items-center rounded-full bg-brand-100 text-brand-700">
-                  <Check className="h-3.5 w-3.5" />
-                </span>
-                <span className="text-sm font-medium text-foreground">{p}</span>
-              </li>
-            ))}
-          </ul>
-          <a href="#harga" className="mt-7 inline-block">
-            <Button>
-              Lihat Paket <ArrowRight className="h-4 w-4" />
-            </Button>
-          </a>
-        </Reveal>
-
-        {/* Catalog mockup */}
-        <Reveal delay={0.1}>
-          <Card className="mx-auto max-w-sm overflow-hidden shadow-card">
-            <div className="bg-gradient-to-br from-brand-600 to-brand-700 p-6 text-center text-white">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-white/15 backdrop-blur">
-                <Coffee className="h-8 w-8" />
-              </div>
-              <h3 className="mt-3 text-lg font-bold">Kopi Senja</h3>
-              <p className="text-xs text-white/80">zonakasir.id/store/kopi-senja</p>
-            </div>
-            <CardContent className="space-y-3 p-5">
-              {[
-                { name: "Kopi Susu Gula Aren", price: "Rp18.000" },
-                { name: "Americano", price: "Rp15.000" },
-                { name: "Croissant Butter", price: "Rp22.000" },
-              ].map((item) => (
-                <div
-                  key={item.name}
-                  className="flex items-center justify-between rounded-xl border border-border p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-10 w-10 place-items-center rounded-lg bg-brand-50 text-brand-600">
-                      <Coffee className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.price}</p>
-                    </div>
-                  </div>
-                  <Button size="sm" className="h-8 px-3 text-xs">
-                    <MessageCircle className="h-3.5 w-3.5" /> Pesan
-                  </Button>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Dashboard & Laporan                                                 */
-/* ------------------------------------------------------------------ */
-
-const REPORT_STATS = [
-  { icon: Wallet, label: "Omzet bersih", value: "Rp48,2jt" },
-  { icon: TrendingUp, label: "Penerimaan bruto", value: "Rp54,0jt" },
-  { icon: Boxes, label: "Modal / HPP", value: "Rp31,5jt" },
-  { icon: BarChart3, label: "Laba kotor", value: "Rp16,7jt" },
-];
-
-function DashboardLaporan() {
-  const reduce = useReducedMotion();
-  return (
-    <section id="laporan" className="border-t border-border bg-secondary/30 py-20">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Dashboard"
-          title="Laporan Penjualan dan Stok Barang"
-          desc="Lihat kondisi usaha Anda secara menyeluruh: omzet, modal, laba, produk terlaris, hingga stok menipis."
-        />
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* stat cards */}
-          <div className="grid grid-cols-2 gap-4 lg:col-span-2">
-            {REPORT_STATS.map((s, i) => (
-              <Reveal key={s.label} delay={i * 0.05}>
-                <Card className="h-full">
-                  <CardContent className="p-5">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-100 text-brand-700">
-                      <s.icon className="h-5 w-5" />
-                    </span>
-                    <p className="mt-3 text-xs text-muted-foreground">{s.label}</p>
-                    <p className="mt-1 text-2xl font-bold tracking-tight text-foreground">
-                      {s.value}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Reveal>
-            ))}
-            <Reveal delay={0.2} className="col-span-2">
-              <Card>
-                <CardContent className="p-5">
-                  <div className="mb-4 flex items-center justify-between">
-                    <p className="text-sm font-semibold text-foreground">
-                      Omzet Bulanan
-                    </p>
-                    <Badge variant="soft" className="text-[10px]">
-                      PPN & service charge terpisah
-                    </Badge>
-                  </div>
-                  <div className="flex h-32 items-end gap-2">
-                    {[55, 62, 48, 70, 65, 80, 72, 90, 84, 95, 88, 100].map((h, i) => (
-                      <motion.div
-                        key={i}
-                        initial={reduce ? false : { height: 0 }}
-                        whileInView={{ height: `${h}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: i * 0.04 }}
-                        className="flex-1 rounded-t bg-gradient-to-t from-brand-500 to-brand-300"
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Reveal>
-          </div>
-
-          {/* side lists */}
-          <div className="space-y-4">
-            <Reveal delay={0.1}>
-              <Card>
-                <CardContent className="p-5">
-                  <p className="mb-3 text-sm font-semibold text-foreground">
-                    Produk Terlaris
-                  </p>
-                  <div className="space-y-2.5">
-                    {[
-                      { n: "Kopi Susu Gula Aren", q: "312 terjual" },
-                      { n: "Es Teh Manis", q: "248 terjual" },
-                      { n: "Roti Bakar Cokelat", q: "190 terjual" },
-                    ].map((p) => (
-                      <div key={p.n} className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-foreground">{p.n}</span>
-                        <span className="text-[11px] text-muted-foreground">{p.q}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Reveal>
-            <Reveal delay={0.15}>
-              <Card>
-                <CardContent className="p-5">
-                  <div className="mb-3 flex items-center gap-2">
-                    <PackageMinus className="h-4 w-4 text-amber-500" />
-                    <p className="text-sm font-semibold text-foreground">Stok Menipis</p>
-                  </div>
-                  <div className="space-y-2.5">
-                    {[
-                      { n: "Susu UHT", q: "5 tersisa" },
-                      { n: "Gula Aren", q: "8 tersisa" },
-                    ].map((p) => (
-                      <div key={p.n} className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-foreground">{p.n}</span>
-                        <span className="text-[11px] font-semibold text-amber-600">
-                          {p.q}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Reveal>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Target Pengguna                                                     */
-/* ------------------------------------------------------------------ */
-
-const TARGETS = [
-  { icon: Store, title: "Toko retail", desc: "Penjualan cepat dengan stok dan barcode rapi." },
-  { icon: ShoppingBag, title: "Minimarket & warung", desc: "Kelola banyak produk dan transaksi harian." },
-  { icon: Coffee, title: "Coffee shop, cafe & resto", desc: "Open Bill, pajak, dan struk thermal." },
-  { icon: Shirt, title: "Pakaian, kosmetik & bakery", desc: "Katalog online untuk menjangkau pelanggan." },
-  { icon: Building2, title: "UMKM", desc: "Butuh kasir, stok, QRIS, dan laporan dalam satu app." },
-  { icon: Smartphone, title: "Multi perangkat", desc: "Jalan di komputer, tablet, dan smartphone." },
-];
-
-function TargetPengguna() {
-  return (
-    <section id="pengguna" className="py-20">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Untuk Siapa"
-          title="Aplikasi POS untuk Retail dan F&B"
-          desc="Zona Kasir dirancang fleksibel untuk berbagai jenis usaha di Indonesia."
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {TARGETS.map((t, i) => (
-            <Reveal key={t.title} delay={(i % 3) * 0.05}>
-              <Card className="group h-full transition-all hover:-translate-y-1 hover:shadow-card">
-                <CardContent className="flex items-start gap-4 p-6">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-brand-100 text-brand-700 transition-colors group-hover:bg-brand-600 group-hover:text-white">
-                    <t.icon className="h-6 w-6" aria-hidden="true" />
+              >
+                {plan.highlight ? (
+                  <span className="absolute right-5 top-5 rounded-xl bg-brand-700 px-3 py-1.5 text-xs font-extrabold text-white">
+                    Rekomendasi
                   </span>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {t.desc}
-                    </p>
+                ) : null}
+                <div className="min-h-[13.5rem]">
+                  <h3 className="text-xl font-extrabold text-foreground">{plan.name}</h3>
+                  <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
+                    {plan.desc}
+                  </p>
+                  <div className="mt-7 flex flex-wrap items-end gap-x-2 gap-y-1">
+                    <span className="text-4xl font-extrabold tracking-[-0.035em] text-foreground sm:text-5xl">
+                      {plan.price}
+                    </span>
+                    <span className="pb-1 text-sm font-semibold text-muted-foreground">
+                      {plan.period}
+                    </span>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+
+                <ul className="mt-6 flex-1 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3 text-sm">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                      <span className="font-semibold text-foreground/80">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {plan.highlight ? (
+                  <PrimaryLink href={plan.href} target={plan.target} className="mt-8 w-full">
+                    {plan.cta}
+                  </PrimaryLink>
+                ) : (
+                  <SecondaryLink href={plan.href} target={plan.target} className="mt-8 w-full">
+                    {plan.cta}
+                  </SecondaryLink>
+                )}
+              </article>
             </Reveal>
           ))}
         </div>
@@ -904,156 +1266,222 @@ function TargetPengguna() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* SEO copy block                                                      */
-/* ------------------------------------------------------------------ */
+const TESTIMONIALS = [
+  {
+    quote:
+      "Saat jam ramai, kami tidak lagi bolak-balik cek catatan. Transaksi, menu terjual, dan stok yang mulai tipis sudah terlihat dari dashboard setelah toko tutup.",
+    name: "Frestiono",
+    role: "Pimpinan Koperasi KPRI Upaya, Kepanjen",
+  },
+  {
+    quote:
+      "Kasir baru lebih cepat jalan karena alurnya sederhana. Saya bisa cek penjualan harian tanpa menunggu rekap manual dari masing-masing shift.",
+    name: "Maya Lestari",
+    role: "Owner toko Lestari, Sidoarjo",
+  },
+  {
+    quote:
+      "Kami mulai dari produk yang belum tertata dan struk masih seadanya. Setelah transaksi harian makin banyak, laporan penjualan dan struk tanpa branding membuat operasional terlihat jauh lebih rapi.",
+    name: "Dimas Wicaksono",
+    role: "Owner Warung Fatimah, Bangil",
+  },
+];
 
-function SeoIntro() {
+function Testimonials() {
   return (
-    <section className="border-t border-border bg-secondary/30 py-16">
-      <div className="container max-w-3xl text-center">
+    <section className="bg-page-base py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Aplikasi Kasir Gratis untuk Memulai Usaha Kecil
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Zona Kasir adalah aplikasi kasir gratis yang bisa langsung digunakan
-            untuk memulai usaha. Paket FREE cocok untuk toko kecil dengan maksimal
-            50 produk dan satu akun kasir — lengkap dengan kasir POS, QRIS
-            merchant, dan katalog online tanpa biaya.
-          </p>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-            Saat usaha berkembang, paket PRO seharga Rp50.000/bulan membuka produk
-            yang lebih banyak, banyak akun kasir, Open Bill untuk cafe dan resto,
-            voucher, pajak &amp; service charge, rekapitulasi laporan lengkap, serta
-            struk tanpa branding Zona Kasir. Dengan dukungan stok barang, laporan
-            penjualan, QRIS merchant, dan katalog online, Zona Kasir menjadi
-            software kasir yang tumbuh bersama bisnis Anda.
-          </p>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-            Untuk bisnis yang ingin sistem lebih profesional, paket BUSINESS mulai
-            dari Rp1 jutaan/tahun menghadirkan custom aplikasi, custom branding,
-            setup khusus, serta payment gateway QRIS dinamis Midtrans dengan status
-            pembayaran otomatis melalui webhook. Harga BUSINESS menyesuaikan
-            kebutuhan masing-masing merchant.
-          </p>
+          <SectionIntro
+            eyebrow="Cerita pengguna"
+            title="Masalah kecil di kasir bisa jadi pekerjaan besar kalau terus manual"
+            desc="Contoh testimoni berikut menggambarkan situasi nyata yang sering dialami pemilik usaha kecil saat mulai merapikan operasional."
+          />
         </Reveal>
+
+        <div className="grid gap-5 lg:grid-cols-3">
+          {TESTIMONIALS.map((item, index) => (
+            <Reveal key={item.name} delay={index * 0.05}>
+              <article className="h-full rounded-[2rem] border border-border bg-surface p-6">
+                <div className="mb-5 flex items-center gap-1.5 text-amber-500">
+                  {Array.from({ length: 5 }).map((_, starIndex) => (
+                    <Star
+                      key={starIndex}
+                      className="h-4 w-4 fill-current"
+                      aria-hidden="true"
+                    />
+                  ))}
+                  <span className="ml-2 text-xs font-bold text-muted-foreground">
+                    Dipercaya pengguna UMKM
+                  </span>
+                </div>
+                <p className="text-base font-semibold leading-8 text-foreground/90">
+                  "{item.quote}"
+                </p>
+                <div className="mt-8 border-t border-border pt-5">
+                  <p className="font-extrabold text-foreground">{item.name}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{item.role}</p>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/* FAQ                                                                 */
-/* ------------------------------------------------------------------ */
 
 const FAQS = [
   {
     q: "Apa itu Zona Kasir?",
-    a: "Zona Kasir adalah aplikasi kasir online dan POS berbasis web untuk toko, UMKM, retail, coffee shop, dan bisnis F&B. Anda bisa mengelola transaksi, stok barang, QRIS merchant, katalog online, struk, dan laporan usaha dalam satu sistem.",
+    a: "Zona Kasir adalah aplikasi kasir online dan POS berbasis web untuk mengelola transaksi, produk, stok, QRIS merchant, katalog, struk, dan laporan usaha.",
   },
   {
     q: "Apakah Zona Kasir bisa digunakan gratis?",
-    a: "Ya. Paket FREE seharga Rp0 sudah mencakup kasir POS, QRIS merchant, katalog online, hingga 50 produk dan 1 akun kasir. Cocok untuk memulai usaha kecil.",
+    a: "Bisa. Paket FREE seharga Rp0 mendukung kasir POS, tampilan QRIS merchant, katalog online, maksimal 20 produk, dan 1 akun kasir.",
   },
   {
-    q: "Apa beda paket FREE dan PRO?",
-    a: "Paket FREE dibatasi 50 produk dan 1 akun kasir dengan struk berbranding Zona Kasir. Paket PRO Rp50.000/bulan memberi produk lebih banyak, banyak akun kasir, voucher & pajak, Open Bill untuk cafe/resto, import produk tanpa batas plan, dan struk tanpa branding.",
+    q: "Apa perbedaan FREE, PRO, dan BUSINESS?",
+    a: "FREE cocok untuk mulai dengan maksimal 20 produk. PRO Rp50.000/bulan menambah produk tanpa batas, multiple kasir, Open Bill, promo, pajak, service charge, dan laporan lengkap. BUSINESS mulai Rp1 jutaan/tahun untuk custom aplikasi, custom branding, setup khusus, dan QRIS dinamis.",
   },
   {
-    q: "Apakah Zona Kasir cocok untuk toko retail?",
-    a: "Sangat cocok. Zona Kasir mendukung manajemen produk dan barcode, stok otomatis, serta laporan penjualan untuk minimarket, warung, toko pakaian, kosmetik, dan bakery.",
-  },
-  {
-    q: "Apakah Zona Kasir cocok untuk coffee shop dan cafe?",
-    a: "Ya. Untuk coffee shop, cafe, dan resto tersedia fitur Open Bill di paket PRO, pajak dan service charge, serta cetak struk thermal.",
+    q: "Apakah katalog bisa dipakai untuk order online?",
+    a: "Tidak. Katalog Zona Kasir dibuat sebagai etalase informasi untuk melihat produk, harga, kategori, dan info toko. Transaksi tetap dicatat melalui kasir POS.",
   },
   {
     q: "Apakah bisa menggunakan QRIS sendiri?",
-    a: "Bisa. Zona Kasir menggunakan QRIS statis milik merchant Anda sendiri dengan konfirmasi pembayaran manual, sehingga dana langsung masuk ke rekening usaha Anda.",
+    a: "Bisa. Zona Kasir dapat menampilkan QRIS merchant milik usaha Anda di alur kasir, sehingga proses pembayaran tetap rapi dan mudah dicek oleh kasir.",
   },
   {
     q: "Apakah bisa cetak struk thermal?",
-    a: "Bisa. Zona Kasir mendukung cetak struk thermal ukuran 58mm dan 80mm.",
+    a: "Bisa. Zona Kasir mendukung printer thermal 58mm dan 80mm untuk kebutuhan kasir toko, retail, dan F&B.",
   },
   {
-    q: "Apakah bisa import produk dari Excel?",
-    a: "Bisa. Anda dapat mengimpor produk dari file Excel/CSV. Paket FREE mengikuti batas plan, sedangkan paket PRO tanpa batas plan.",
-  },
-  {
-    q: "Apakah tersedia katalog online?",
-    a: "Ya. Setiap merchant mendapat link katalog publik seperti /store/{slug} yang bisa dibagikan ke pelanggan, dengan order via WhatsApp tanpa perlu website tambahan.",
-  },
-  {
-    q: "Apakah data setiap merchant terpisah?",
-    a: "Ya. Setiap merchant memiliki data produk, transaksi, stok, dan laporan yang terpisah dan aman.",
+    q: "Apakah tersedia QRIS dinamis?",
+    a: "Opsi pembayaran yang lebih otomatis dapat dibahas di paket BUSINESS sesuai kebutuhan dan kesiapan operasional merchant.",
   },
 ];
 
 function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
+
   return (
-    <section id="faq" className="py-20">
-      <div className="container max-w-3xl">
-        <SectionHeading
-          eyebrow="FAQ"
-          title="Pertanyaan Seputar Aplikasi Kasir Gratis"
-          desc="Belum menemukan jawaban? Hubungi tim kami kapan saja."
-        />
-        <div className="space-y-3">
-          {FAQS.map((f, i) => (
-            <AccordionItem
-              key={f.q}
-              question={f.q}
-              answer={f.a}
-              isOpen={open === i}
-              onToggle={() => setOpen(open === i ? null : i)}
-            />
-          ))}
+    <section id="faq" className="bg-page-surface py-20 lg:py-28">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:px-8">
+        <Reveal>
+          <SectionIntro
+            eyebrow="FAQ"
+            title="Pertanyaan yang biasanya muncul sebelum mencoba"
+            desc="Jawaban singkat tentang paket, QRIS, katalog, struk, dan fitur untuk usaha kecil."
+            align="left"
+          />
+          <SecondaryLink href={REGISTER_URL}>Coba Paket FREE</SecondaryLink>
+        </Reveal>
+
+        <div className="divide-y divide-border rounded-[2rem] border border-border bg-card px-5">
+          {FAQS.map((faq, index) => {
+            const isOpen = open === index;
+
+            return (
+              <div key={faq.q}>
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-between gap-5 py-5 text-left"
+                  onClick={() => setOpen(isOpen ? null : index)}
+                  aria-expanded={isOpen}
+                >
+                  <span className="text-base font-extrabold text-foreground">
+                    {faq.q}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "h-5 w-5 shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                      BRAND_TEXT,
+                      isOpen && "rotate-180"
+                    )}
+                    aria-hidden="true"
+                  />
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen ? (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: springEase }}
+                      className="overflow-hidden"
+                    >
+                      <p className="max-w-3xl pb-5 text-sm leading-7 text-muted-foreground sm:text-base">
+                        {faq.a}
+                      </p>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* CTA Penutup                                                         */
-/* ------------------------------------------------------------------ */
-
 function CTASection() {
   return (
-    <section className="py-20">
-      <div className="container">
+    <section className="relative overflow-hidden bg-page-base pb-16 pt-12 lg:pb-24 lg:pt-16">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-surface" aria-hidden="true" />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 to-brand-800 px-6 py-16 text-center text-white sm:px-12">
-            <div className="absolute inset-0 bg-grid [background-size:32px_32px] opacity-20" />
-            <div className="relative mx-auto max-w-2xl">
-              <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
-                Siap Mengelola Usaha dengan Lebih Mudah?
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-white/85">
-                Daftarkan toko, masukkan produk, unggah QRIS usaha Anda, dan mulai
-                transaksi bersama Zona Kasir.
-              </p>
-              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <a href={REGISTER_URL}>
-                  <Button
-                    size="lg"
-                    className="w-full bg-white text-brand-700 hover:bg-brand-50 sm:w-auto"
-                  >
-                    Daftar Gratis Sekarang <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </a>
-                <a href={CONTACT_URL} target="_blank" rel="noopener noreferrer">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full border-white/40 bg-transparent text-white hover:bg-white/10 hover:border-white sm:w-auto"
-                  >
-                    <MessageCircle className="h-4 w-4" /> Hubungi Kami
-                  </Button>
-                </a>
+          <div className="relative overflow-hidden rounded-[2.2rem] border border-brand-200/80 bg-[linear-gradient(135deg,hsl(var(--accent)),hsl(var(--card))_62%,hsl(var(--background)))] p-7 text-foreground shadow-[0_36px_110px_-78px_rgba(25,135,209,0.7)] dark:border-brand-900/80 sm:p-10 lg:p-12">
+            <div
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_-20%,hsl(var(--primary)/0.18),transparent_45%)]"
+              aria-hidden="true"
+            />
+            <div className="relative grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <Badge>
+                  Mulai dari Rp0
+                </Badge>
+                <h2 className="mt-6 max-w-4xl text-balance text-3xl font-extrabold tracking-[-0.025em] sm:text-4xl lg:text-5xl">
+                  Rapikan transaksi, stok, dan laporan tanpa menunggu toko besar dulu
+                </h2>
+                <p className="mt-5 max-w-2xl text-base leading-8 text-muted-foreground">
+                  Daftarkan toko, masukkan produk, unggah QRIS merchant, lalu
+                  gunakan Zona Kasir untuk transaksi harian.
+                </p>
               </div>
+              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+                <PrimaryLink href={REGISTER_URL} className="w-full sm:w-auto lg:w-full">
+                  Daftar gratis
+                </PrimaryLink>
+                <SecondaryLink
+                  href={CONTACT_URL}
+                  target="_blank"
+                  className="w-full sm:w-auto lg:w-full"
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  Konsultasi BUSINESS
+                </SecondaryLink>
+              </div>
+            </div>
+
+            <div className="relative mt-8 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-brand-200/60 pt-6 dark:border-brand-900/60">
+              {[
+                "Gratis selamanya untuk 20 produk",
+                "Tanpa biaya pemasangan",
+                "QRIS atas nama tokomu",
+                "Jalan di browser, tanpa instal",
+              ].map((item) => (
+                <span
+                  key={item}
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
+                >
+                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+                    <Check className="h-3 w-3" aria-hidden="true" />
+                  </span>
+                  {item}
+                </span>
+              ))}
             </div>
           </div>
         </Reveal>
@@ -1062,75 +1490,131 @@ function CTASection() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Footer                                                              */
-/* ------------------------------------------------------------------ */
-
 function Footer() {
   return (
-    <footer className="border-t border-border bg-secondary/30">
-      <div className="container py-12">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div className="md:col-span-1">
+    <footer className="bg-surface">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
+          <div>
             <Logo />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Aplikasi kasir gratis dan POS modern untuk toko, UMKM, retail,
-              coffee shop, dan F&B di Indonesia.
+            <p className="mt-5 max-w-sm text-sm leading-7 text-muted-foreground">
+              Aplikasi kasir online dan POS untuk toko, UMKM, retail, coffee
+              shop, dan F&B di Indonesia.
             </p>
           </div>
+
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Produk</h3>
-            <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
-              <li><a href="#fitur" className="hover:text-brand-600">Fitur</a></li>
-              <li><a href="#harga" className="hover:text-brand-600">Harga</a></li>
-              <li><a href="#katalog" className="hover:text-brand-600">Katalog</a></li>
-              <li><a href="#laporan" className="hover:text-brand-600">Laporan</a></li>
+            <h3 className="text-sm font-extrabold text-foreground">Produk</h3>
+            <ul className="mt-4 space-y-3 text-sm font-semibold text-muted-foreground">
+              {[
+                ["Fitur", "#fitur"],
+                ["Dashboard", "#dashboard"],
+                ["Harga", "#harga"],
+                ["FAQ", "#faq"],
+              ].map(([label, href]) => (
+                <li key={label}>
+                  <a href={href} className="transition-colors hover:text-brand-600 dark:hover:text-brand-300">
+                    {label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
+
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Perusahaan</h3>
-            <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
-              <li><a href="#faq" className="hover:text-brand-600">FAQ</a></li>
-              <li><a href={CONTACT_URL} className="hover:text-brand-600">Hubungi Kami</a></li>
-              <li><a href={LOGIN_URL} className="hover:text-brand-600">Login</a></li>
+            <h3 className="text-sm font-extrabold text-foreground">Akun</h3>
+            <ul className="mt-4 space-y-3 text-sm font-semibold text-muted-foreground">
+              <li>
+                <a href={LOGIN_URL} className="transition-colors hover:text-brand-600 dark:hover:text-brand-300">
+                  Login
+                </a>
+              </li>
+              <li>
+                <a href={REGISTER_URL} className="transition-colors hover:text-brand-600 dark:hover:text-brand-300">
+                  Daftar gratis
+                </a>
+              </li>
+              <li>
+                <a href={CONTACT_URL} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-brand-600 dark:hover:text-brand-300">
+                  BUSINESS
+                </a>
+              </li>
             </ul>
           </div>
+
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Mulai Sekarang</h3>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Daftar gratis dan kelola usaha Anda hari ini.
-            </p>
-            <a href={REGISTER_URL} className="mt-4 inline-block">
-              <Button size="sm">Daftar Gratis</Button>
-            </a>
+            <h3 className="text-sm font-extrabold text-foreground">Kontak</h3>
+            <ul className="mt-4 space-y-3 text-sm font-semibold text-muted-foreground">
+              <li>
+                <a
+                  href="https://www.instagram.com/zona.kasir/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 transition-colors hover:text-brand-600 dark:hover:text-brand-300"
+                >
+                  <Instagram className="h-4 w-4" aria-hidden="true" />
+                  @zona.kasir
+                </a>
+              </li>
+              <li>
+                <a
+                  href={WA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 transition-colors hover:text-brand-600 dark:hover:text-brand-300"
+                >
+                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  +62 859-1069-97680
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:support@zonakasir.web.id"
+                  className="flex items-center gap-2 transition-colors hover:text-brand-600 dark:hover:text-brand-300"
+                >
+                  <Mail className="h-4 w-4" aria-hidden="true" />
+                  support@zonakasir.web.id
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="mt-10 border-t border-border pt-6 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Zona Kasir. Aplikasi kasir online & POS untuk
-          UMKM Indonesia.
+
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-center text-xs font-semibold text-muted-foreground sm:flex-row">
+          <span>&copy; 2026 Zona Kasir</span>
+          <div className="flex items-center gap-4">
+            <a
+              href="mailto:support@zonakasir.web.id?subject=Kebijakan%20privasi%20Zona%20Kasir"
+              className="transition-colors hover:text-brand-600 dark:hover:text-brand-300"
+            >
+              Kebijakan privasi
+            </a>
+            <a
+              href="mailto:support@zonakasir.web.id?subject=Syarat%20layanan%20Zona%20Kasir"
+              className="transition-colors hover:text-brand-600 dark:hover:text-brand-300"
+            >
+              Syarat layanan
+            </a>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Page                                                                */
-/* ------------------------------------------------------------------ */
-
 export default function ZonaKasirLandingPage() {
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased">
       <Navbar />
-      <main>
+      <main className="pt-20">
         <Hero />
-        <Keunggulan />
-        <FiturPOS />
+        <TrustStrip />
+        <Features />
+        <Benefits />
+        <UseCases />
+        <DashboardPreview />
         <Pricing />
-        <KatalogOnline />
-        <DashboardLaporan />
-        <TargetPengguna />
-        <SeoIntro />
+        <Testimonials />
         <FAQ />
         <CTASection />
       </main>
