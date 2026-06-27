@@ -57,11 +57,11 @@
     />
     <meta name="author" content="Zona Kasir" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://zonakasir.web.id/" />
+    <link rel="canonical" href="https://zonakasir.com/" />
 
     <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://zonakasir.web.id/" />
+    <meta property="og:url" content="https://zonakasir.com/" />
     <meta property="og:site_name" content="Zona Kasir" />
     <meta property="og:locale" content="id_ID" />
     <meta
@@ -72,7 +72,7 @@
       property="og:description"
       content="Aplikasi kasir online dan POS untuk toko, UMKM, retail, cafe, dan F&B. Transaksi, stok otomatis, QRIS merchant, katalog produk, Open Bill, dan laporan usaha dalam satu sistem. Mulai gratis."
     />
-    <meta property="og:image" content="https://zonakasir.web.id/og-image.png" />
+    <meta property="og:image" content="https://zonakasir.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Zona Kasir - Aplikasi Kasir & POS untuk UMKM" />
@@ -84,7 +84,7 @@
       name="twitter:description"
       content="Aplikasi kasir online dan POS modern untuk transaksi, stok barang, QRIS, dan laporan bisnis. Mulai gratis."
     />
-    <meta name="twitter:image" content="https://zonakasir.web.id/og-image.png" />
+    <meta name="twitter:image" content="https://zonakasir.com/og-image.png" />
 
     <!-- Structured Data: SoftwareApplication -->
     <script type="application/ld+json">
@@ -95,7 +95,7 @@
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web, Android, iOS, Windows",
         "description": "Aplikasi kasir online dan POS untuk toko, UMKM, retail, coffee shop, dan F&B. Kelola transaksi, stok otomatis, QRIS merchant, katalog produk, Open Bill, struk, dan laporan usaha.",
-        "url": "https://zonakasir.web.id/",
+        "url": "https://zonakasir.com/",
         "offers": [
           {
             "@type": "Offer",
@@ -153,8 +153,8 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Zona Kasir",
-        "url": "https://zonakasir.web.id/",
-        "logo": "https://zonakasir.web.id/zona-kasir-icon.png",
+        "url": "https://zonakasir.com/",
+        "logo": "https://zonakasir.com/zona-kasir-icon.png",
         "description": "Penyedia aplikasi kasir gratis, aplikasi kasir online, dan POS modern untuk mengelola transaksi, stok barang, QRIS, serta laporan bisnis.",
         "sameAs": []
       }
@@ -259,6 +259,69 @@
     </script>
   </head>
   <body>
+    <!-- Preloader: tampil instan sebelum React siap, lalu di-fade-out dari main.tsx -->
+    <style>
+      #zk-preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: #ffffff;
+        transition: opacity 0.45s ease;
+      }
+      html.dark #zk-preloader { background: #0a0f1c; }
+      #zk-preloader.zk-hide { opacity: 0; pointer-events: none; }
+      #zk-preloader .zk-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        font-size: 20px;
+        color: #0f172a;
+      }
+      html.dark #zk-preloader .zk-logo { color: #f8fafc; }
+      #zk-preloader .zk-logo img { width: 40px; height: 40px; }
+      #zk-preloader .zk-logo .zk-logo-dark { display: none; }
+      html.dark #zk-preloader .zk-logo .zk-logo-light { display: none; }
+      html.dark #zk-preloader .zk-logo .zk-logo-dark { display: block; }
+      #zk-preloader .zk-bar {
+        width: 132px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(19, 134, 209, 0.15);
+        overflow: hidden;
+      }
+      #zk-preloader .zk-bar span {
+        display: block;
+        height: 100%;
+        width: 40%;
+        border-radius: 999px;
+        background: #1386d1;
+        animation: zk-slide 1.1s ease-in-out infinite;
+      }
+      @keyframes zk-slide {
+        0% { transform: translateX(-120%); }
+        100% { transform: translateX(330%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #zk-preloader .zk-bar span { animation-duration: 2.2s; }
+      }
+    </style>
+    <div id="zk-preloader" role="status" aria-label="Memuat Zona Kasir">
+      <div class="zk-logo">
+        <img class="zk-logo-light" src="/zona-kasir-icon.png" width="40" height="40" alt="" />
+        <img class="zk-logo-dark" src="/logo-baru-putih.png" width="40" height="40" alt="" />
+        ZONA KASIR
+      </div>
+      <div class="zk-bar"><span></span></div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

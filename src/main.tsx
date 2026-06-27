@@ -8,3 +8,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <App />
   </React.StrictMode>
 );
+
+// Hilangkan preloader setelah React mount (fade-out lalu hapus dari DOM).
+function hidePreloader() {
+  const el = document.getElementById("zk-preloader");
+  if (!el) return;
+  el.classList.add("zk-hide");
+  setTimeout(() => el.remove(), 500);
+}
+if (document.readyState === "complete") {
+  requestAnimationFrame(hidePreloader);
+} else {
+  window.addEventListener("load", () => requestAnimationFrame(hidePreloader));
+}

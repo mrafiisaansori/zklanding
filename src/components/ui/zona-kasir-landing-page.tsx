@@ -40,8 +40,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-const LOGIN_URL = "https://merchant.zonakasir.web.id/";
-const REGISTER_URL = "https://merchant.zonakasir.web.id/";
+const LOGIN_URL = "https://merchant.zonakasir.com/";
+const REGISTER_URL = "https://merchant.zonakasir.com/";
 const WA_URL = "https://wa.me/62859106997680";
 const CONTACT_URL =
   "https://wa.me/62859106997680?text=Halo%20Zona%20Kasir%2C%20saya%20tertarik%20dengan%20paket%20BUSINESS.";
@@ -262,7 +262,14 @@ function Logo() {
       <img
         src="/zona-kasir-icon.png"
         alt="Logo Zona Kasir"
-        className="h-10 w-10 rounded-2xl object-contain"
+        className="h-10 w-10 rounded-2xl object-contain dark:hidden"
+        width="40"
+        height="40"
+      />
+      <img
+        src="/logo-baru-putih.png"
+        alt="Logo Zona Kasir"
+        className="hidden h-10 w-10 rounded-2xl object-contain dark:block"
         width="40"
         height="40"
       />
@@ -434,21 +441,25 @@ function HeroDashboardMockup() {
                   Online
                 </span>
               </div>
-              <img
-                src="/pos.png"
-                alt="Preview aplikasi kasir Zona Kasir pada perangkat toko"
-                width="1448"
-                height="1086"
-                loading="eager"
-                className="aspect-[4/3] rounded-2xl border border-border object-cover"
-                onError={(event) => {
-                  const image = event.currentTarget;
-                  if (!image.dataset.fallback) {
-                    image.dataset.fallback = "1";
-                    image.src = "/og-image.png";
-                  }
-                }}
-              />
+              <picture>
+                <source srcSet="/assets/pos.webp" type="image/webp" />
+                <img
+                  src="/assets/pos.jpg"
+                  alt="Preview aplikasi kasir Zona Kasir pada perangkat toko"
+                  width="1280"
+                  height="960"
+                  loading="eager"
+                  decoding="async"
+                  className="aspect-[4/3] rounded-2xl border border-border object-cover"
+                  onError={(event) => {
+                    const image = event.currentTarget;
+                    if (!image.dataset.fallback) {
+                      image.dataset.fallback = "1";
+                      image.src = "/og-image.png";
+                    }
+                  }}
+                />
+              </picture>
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-border bg-card/70 p-3">
                   <p className="text-[11px] text-muted-foreground">Item</p>
@@ -1098,7 +1109,7 @@ function DashboardPreview() {
                   <div>
                     <h3 className="font-extrabold">Kopi Senja</h3>
                     <p className="text-xs text-white/75">
-                      zonakasir.web.id/store/kopi-senja
+                      zonakasir.com/store/kopi-senja
                     </p>
                   </div>
                 </div>
@@ -1153,7 +1164,7 @@ const PLANS = [
       "Maksimal 20 produk",
       "1 akun kasir",
       "Kasir POS",
-      "Tampilan QRIS merchant",
+      "QRIS Dinamis",
       "Katalog online",
       "Struk dengan branding Zona Kasir",
     ],
@@ -1169,10 +1180,11 @@ const PLANS = [
     features: [
       "Produk tanpa batas",
       "Multiple kasir",
+      "QRIS Dinamis",
+      "Rekapitulasi laporan lengkap",
       "Open Bill",
       "Voucher dan promo",
       "Pajak dan service charge",
-      "Rekapitulasi laporan lengkap",
       "Struk tanpa branding Zona Kasir",
     ],
   },
@@ -1180,18 +1192,17 @@ const PLANS = [
     name: "BUSINESS",
     price: "Custom",
     period: "sesuai kebutuhan",
-    desc: "Untuk bisnis yang butuh setup khusus, penyesuaian brand, dan alur pembayaran lebih profesional.",
+    desc: "Cocok untuk bisnis yang membutuhkan aplikasi dengan penyesuaian brand, setup khusus, dan QRIS statis milik merchant.",
     cta: "Konsultasi Business",
     href: CONTACT_URL,
     target: "_blank",
     highlight: false,
     features: [
-      "Custom aplikasi dan branding",
-      "Setup operasional sesuai kebutuhan",
-      "Alur pembayaran terintegrasi",
-      "Pendampingan implementasi",
-      "Konfigurasi outlet dan tim",
-      "Prioritas penyesuaian fitur",
+      "QRIS Statis khusus merchant",
+      "Custom aplikasi",
+      "Custom branding",
+      "Setup khusus",
+      "Support prioritas",
     ],
   },
 ];
@@ -1569,11 +1580,11 @@ function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:support@zonakasir.web.id"
+                  href="mailto:support@zonakasir.com"
                   className="flex items-center gap-2 transition-colors hover:text-brand-600 dark:hover:text-brand-300"
                 >
                   <Mail className="h-4 w-4" aria-hidden="true" />
-                  support@zonakasir.web.id
+                  support@zonakasir.com
                 </a>
               </li>
             </ul>
@@ -1584,13 +1595,13 @@ function Footer() {
           <span>&copy; 2026 Zona Kasir</span>
           <div className="flex items-center gap-4">
             <a
-              href="mailto:support@zonakasir.web.id?subject=Kebijakan%20privasi%20Zona%20Kasir"
+              href="mailto:support@zonakasir.com?subject=Kebijakan%20privasi%20Zona%20Kasir"
               className="transition-colors hover:text-brand-600 dark:hover:text-brand-300"
             >
               Kebijakan privasi
             </a>
             <a
-              href="mailto:support@zonakasir.web.id?subject=Syarat%20layanan%20Zona%20Kasir"
+              href="mailto:support@zonakasir.com?subject=Syarat%20layanan%20Zona%20Kasir"
               className="transition-colors hover:text-brand-600 dark:hover:text-brand-300"
             >
               Syarat layanan
